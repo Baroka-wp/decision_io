@@ -29,6 +29,14 @@ body {
   @apply sticky bottom-0 bg-white p-4;
 }
 
+/* Empêcher le zoom sur les inputs pour mobile */
+@media (max-width: 640px) {
+  input[type="text"],
+  textarea {
+    font-size: 16px;
+  }
+}
+
 
 .loader {
   display: inline-block;
