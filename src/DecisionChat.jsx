@@ -66,7 +66,7 @@ export default function DecisionChat() {
     }
 
     async function generateDecisionNode(question, context = '', depth = 0) {
-        const systemPrompt = `You are a decision-making assistant. Generate a decision node in JSON format based on the user's question and context. Always provide options for each node. Ask exactly 5 questions before making a final decision. Avoid repeating questions or asking very similar questions.`;
+        const systemPrompt = `Vous êtes un expert en price de décision. Générez un nœud de décision au format JSON en fonction de la question et du contexte de l'utilisateur. Fournissez toujours des options pour chaque nœud. Posez exactement 4 questions avant de prendre une décision finale. Évitez de répéter les questions ou de poser des questions très similaires.`
 
         const userPrompt = `Question: "${question}"
     ${context ? `Previous context: ${context}` : ''}
@@ -80,12 +80,14 @@ export default function DecisionChat() {
         "isDecision": false
     }
     
-    Rules:
-    1. Always include at least 2 options for each node.
-    2. User user language be frendly and you can somtimes use client name ${userName} to personalize conversation
-    2. Set "isDecision" to true only if this is the 4th question (depth 3).
-    3. Do not repeat questions that have been asked before or ask very similar questions.
-    4. If you can't generate a new, unique question, try to rephrase or approach from a different angle.`;
+    Règles :
+    1. Incluez toujours au moins 2 options pour chaque nœud.
+    2. Utilise la langue de l'utilisateur et tu doit être conviviale.
+    3. Tu dois tutoyer l'utilisateur
+    4. Définissez « isDecision » sur true uniquement s'il s'agit de la 4e question (profondeur 3).
+    5. Ne répétez pas les questions qui ont déjà été posées ou ne posez pas de questions très similaires.
+    6. Si vous ne pouvez pas générer une nouvelle question unique, essayez de la reformuler ou de l'aborder sous un angle différent.
+    7. Il faut etre consis bref coherent et qualitatif dans tes questions et options`
 
         const messages = [
             { role: "system", content: systemPrompt },
@@ -189,11 +191,11 @@ export default function DecisionChat() {
     }
 
     return (
-        <div className="container mx-auto p-4 flex flex-col h-screen">
-            <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-fuschia-600 to-violet-600 mb-4 text-center">Décision</h1>
+        <div className="container mx-auto flex flex-col h-screen">
+            <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-fuschia-600 to-violet-600 mb-4 text-center">Assistant de Décision IA</h1>
             {showNameModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                    <div className="bg-white p-6 rounded-lg">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+                    <div className="bg-white p-6 rounded-lg w-full max-w-md">
                         <h2 className="text-2xl mb-4">Bienvenue ! Quel est ton nom ?</h2>
                         <div className="flex items-center mb-4">
                             <User className="mr-2" size={18} />
@@ -207,22 +209,22 @@ export default function DecisionChat() {
                         </div>
                         <button
                             onClick={handleNameSubmit}
-                            className="bg-gradient-to-r from-fuschia-500 to-violet-500 text-white px-4 py-2 rounded"
+                            className="w-full bg-gradient-to-r from-fuschia-500 to-violet-500 text-white px-4 py-2 rounded"
                         >
                             Commencer
                         </button>
                     </div>
                 </div>
             )}
-            <div className="flex-grow flex flex-col bg-white rounded-lg shadow overflow-hidden">
-                <div ref={chatContainerRef} className="flex-grow overflow-y-auto p-4 scrollbar-hide">
+            <div className="chat-container bg-white rounded-lg shadow overflow-hidden">
+                <div ref={chatContainerRef} className="messages-container p-4 scrollbar-hide">
                     {messages.map((message, index) => (
-                        <div key={index} className={`mb-4 p-4 rounded-lg ${message.isUser ? 'bg-gradient-to-r from-fuschia-200 to-violet-200 ml-auto' : 'bg-gradient-to-r from-fuschia-100 to-violet-100 mr-auto'} max-w-[80%]`}>
+                        <div key={index} className={`message mb-4 p-4 rounded-lg ${message.isUser ? 'bg-gradient-to-r from-fuschia-200 to-violet-200 ml-auto' : 'bg-gradient-to-r from-fuschia-100 to-violet-100 mr-auto'}`}>
                             {message.content}
                             {message.options && (
                                 <div className="mt-2 flex flex-wrap gap-2">
                                     {message.options.map((option, optionIndex) => (
-                                        <button key={optionIndex} onClick={() => handleOptionClick(option)} className="bg-gradient-to-r from-fuschia-500 to-violet-500 text-white px-3 py-1 rounded hover:from-fuschia-600 hover:to-violet-600 focus:outline-none focus:ring-2 focus:ring-fuschia-700">
+                                        <button key={optionIndex} onClick={() => handleOptionClick(option)} className="bg-gradient-to-r from-fuschia-500 to-violet-500 text-white px-3 py-1 rounded text-sm">
                                             {option}
                                         </button>
                                     ))}
@@ -231,12 +233,12 @@ export default function DecisionChat() {
                         </div>
                     ))}
                     {isLoading && (
-                        <div className="loader mb-4 p-4 rounded-lg bg-gradient-to-r from-fuschia-100 to-violet-100 mr-auto max-w-[80%]">
+                        <div className="loader mb-4 p-4 rounded-lg bg-gradient-to-r from-fuschia-100 to-violet-100 mr-auto">
                             <div></div><div></div><div></div><div></div>
                         </div>
                     )}
                 </div>
-                <div className="p-4 bg-gradient-to-r from-fuschia-200 to-violet-200">
+                <div className="input-container bg-gradient-to-r from-fuschia-200 to-violet-200">
                     <div className="flex items-center">
                         <input
                             type="text"
@@ -248,7 +250,7 @@ export default function DecisionChat() {
                         />
                         <button
                             onClick={handleUserInput}
-                            className="bg-gradient-to-r from-fuschia-500 to-violet-500 text-white px-4 py-2 rounded-r-lg hover:from-fuschia-600 hover:to-violet-600 focus:outline-none focus:ring-2 focus:ring-fuschia-700 transition duration-300 ease-in-out transform hover:scale-105 flex items-center"
+                            className="bg-gradient-to-r from-fuschia-500 to-violet-500 text-white px-4 py-2 rounded-r-lg flex items-center"
                         >
                             <Send className="mr-2" size={18} />
                             Envoyer
@@ -257,20 +259,20 @@ export default function DecisionChat() {
                 </div>
             </div>
             {showNewConversation && (
-                <div className="mt-4 text-center">
+                <div className="mt-4 flex justify-center space-x-2">
                     <button
                         onClick={startNewConversation}
-                        className="bg-gradient-to-r from-fuschia-500 to-violet-500 text-white px-6 py-2 rounded-full hover:from-fuschia-600 hover:to-violet-600 focus:outline-none focus:ring-2 focus:ring-fuschia-700 mr-2 transition duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center"
+                        className="bg-gradient-to-r from-fuschia-500 to-violet-500 text-white px-4 py-2 rounded-full flex items-center"
                     >
                         <RotateCcw className="mr-2" size={18} />
-                        Nouvelle conversation
+                        Nouvelle
                     </button>
                     <button
                         onClick={saveChatToPdf}
-                        className="bg-gradient-to-r from-fuschia-500 to-violet-500 text-white px-6 py-2 rounded-full hover:from-fuschia-600 hover:to-violet-600 focus:outline-none focus:ring-2 focus:ring-fuschia-700 transition duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center"
+                        className="bg-gradient-to-r from-fuschia-500 to-violet-500 text-white px-4 py-2 rounded-full flex items-center"
                     >
                         <Save className="mr-2" size={18} />
-                        Sauvegarder en PDF
+                        PDF
                     </button>
                 </div>
             )}

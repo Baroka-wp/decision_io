@@ -6,7 +6,29 @@
 
 body {
   font-family: 'Poppins', sans-serif;
+  @apply min-h-screen flex flex-col;
 }
+
+#root {
+  @apply flex-grow flex flex-col;
+}
+
+.container {
+  @apply flex-grow flex flex-col;
+}
+
+.chat-container {
+  @apply flex-grow flex flex-col overflow-hidden;
+}
+
+.messages-container {
+  @apply flex-grow overflow-y-auto;
+}
+
+.input-container {
+  @apply sticky bottom-0 bg-white p-4;
+}
+
 
 .loader {
   display: inline-block;
@@ -80,4 +102,41 @@ body {
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+@media (max-width: 640px) {
+  .container {
+    @apply p-2;
+  }
+
+  h1 {
+    @apply text-2xl mb-2;
+  }
+
+  .chat-container {
+    @apply rounded-none shadow-none;
+  }
+
+  .message {
+    @apply max-w-[90%];
+  }
+
+  .input-container {
+    @apply p-2;
+  }
+
+  .input-container input {
+    @apply text-sm;
+  }
+
+  .input-container button {
+    @apply px-3 py-2 text-sm;
+  }
+}
+
+/* Gestion du clavier virtuel */
+@media (max-height: 500px) {
+  .chat-container {
+    @apply max-h-[calc(100vh-120px)];
+  }
 }
