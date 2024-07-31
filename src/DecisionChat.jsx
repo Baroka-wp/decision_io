@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { jsPDF } from "jspdf";
 import { callOpenAI } from './api';
 import { Send, RotateCcw, Save, User } from 'lucide-react';
-
+import logo from './assets/logo.png';
 
 export default function DecisionChat() {
     const [messages, setMessages] = useState([]);
@@ -206,7 +206,12 @@ export default function DecisionChat() {
 
     return (
         <div className="container mx-auto flex flex-col h-screen">
-            <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-fuschia-600 to-violet-600 mb-4 text-center">Assistant de Décision IA</h1>
+            <header className="sticky top-0 left-0 w-full bg-white py-4 mb-2">
+                <div className="container mx-auto flex justify-center items-center">
+                    <img src={logo} alt="Logo" className="h-8 w-8 mr-4" />
+                    <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-fuschia-600 to-violet-600 mb-0 text-center">Décision</h1>
+                </div>
+            </header>
             {showNameModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
                     <div className="bg-white p-6 rounded-lg w-full max-w-md">
@@ -230,8 +235,8 @@ export default function DecisionChat() {
                     </div>
                 </div>
             )}
-            <div className="chat-container bg-white rounded-lg shadow overflow-hidden">
-                <div ref={chatContainerRef} className="messages-container p-4 scrollbar-hide">
+            <div className="chat-container bg-white rounded-lg shadow overflow-hidden flex flex-col h-screen">
+                <div ref={chatContainerRef} className="messages-container p-4 scrollbar-hide flex flex-col">
                     {messages.map((message, index) => (
                         <div key={index} className={`message mb-4 p-4 rounded-lg ${message.isUser ? 'bg-gradient-to-r from-fuschia-200 to-violet-200 ml-auto' : 'bg-gradient-to-r from-fuschia-100 to-violet-100 mr-auto'}`}>
                             {message.content}
@@ -252,7 +257,7 @@ export default function DecisionChat() {
                         </div>
                     )}
                 </div>
-                <div className="input-container bg-gradient-to-r from-fuschia-200 to-violet-200">
+                <div className="input-container bg-gradient-to-r from-fuschia-200 to-violet-200 fixed bottom-0 w-full p-4">
                     <div className="flex items-center">
                         <input
                             type="text"
