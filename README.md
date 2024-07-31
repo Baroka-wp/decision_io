@@ -36,12 +36,12 @@ L'Assistant de Décision IA est une application web interactive conçue pour aid
 
 4. Créez un fichier `.env` à la racine du projet et ajoutez votre clé API OpenAI :
    ```
-   REACT_APP_OPENAI_API_KEY=votre_clé_api_ici
+   VITE_OPENAI_API_KEY=votre_clé_api_ici
    ```
 
 5. Démarrez l'application en mode développement :
    ```
-   npm start
+   npm run dev
    ```
 
 ## Utilisation
@@ -66,6 +66,6 @@ Les contributions à ce projet sont les bienvenues. Veuillez suivre ces étapes 
 Distribué sous la licence MIT. Voir `LICENSE` pour plus d'informations.
 
 ## Contact
-Votre Nom - [@votretwitter](https://twitter.com/votretwitter) - email@example.com
+Irotori Baroka - [@baroka](https://www.linkedin.com/in/baroka/) - birotori@baroka.com
 
 Lien du projet : [https://github.com/votre-nom/decision_io.git](https://github.com/votre-nom/decision_io.git)
