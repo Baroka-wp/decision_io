@@ -21,7 +21,7 @@ export default function DecisionChat() {
         if (storedName) {
             setUserName(storedName);
             setShowNameModal(false);
-            addMessageToChat(`Bonjour ${storedName} ! Je vais t'aider à prendre une décision. Qu'est-ce qui te préoccupes aujourd'hui ?`, false);
+            addMessageToChat(`Bonjour ${storedName} ! Je vais t'aider à prendre une décision. Qu'est-ce qui te préoccupes aujourd'hui ? ASTUCE: Pose une question dont la reponse est OUI ou NON`, false);
         }
     }, []);
 
@@ -48,7 +48,7 @@ export default function DecisionChat() {
     function addWelcomeMessage(name) {
         setMessages(prevMessages => [...prevMessages, {
             id: Date.now(),
-            content: `Bonjour ${name} ! Je vais t'aider à prendre une décision. Qu'est-ce qui te préoccupes aujourd'hui ?`,
+            content: `Bonjour ${name} ! Je vais t'aider à prendre une décision. Qu'est-ce qui te préoccupes aujourd'hui ? ASTUCE: Pose une question dont la reponse est OUI ou NON`,
             isUser: false
         }]);
     }
