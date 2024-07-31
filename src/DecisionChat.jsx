@@ -101,7 +101,10 @@ export default function DecisionChat() {
     4. Définissez « isDecision » sur true uniquement s'il s'agit de la 4e question (profondeur 3).
     5. Ne répétez pas les questions qui ont déjà été posées ou ne posez pas de questions très similaires.
     6. Si vous ne pouvez pas générer une nouvelle question unique, essayez de la reformuler ou de l'aborder sous un angle différent.
-    7. Il faut etre consis bref coherent et qualitatif dans tes questions et options`
+    7. Il faut etre consis bref coherent et qualitatif dans tes questions et options
+    
+    IMPORTANT
+    Utilisez un algorithme de décision avancé pour prendre une décision finale.`
 
         const messages = [
             { role: "system", content: systemPrompt },
@@ -120,7 +123,12 @@ export default function DecisionChat() {
     Chemin de décision:
     ${decisionPath.map(step => `Q: ${step.question}\nR: ${step.answer}`).join('\n\n')}
     
-    Basez-vous sur ces informations pour prendre une décision finale (OUI ou NON) et expliquez brièvement pourquoi en une phrase.`;
+    Basez-vous sur ces informations pour prendre une décision finale (OUI ou NON) et expliquez pourquoi en une phrase.
+    Il faut tutoyer l'utilisateur, Rendre le message amical en utilisant le nom de l'utisateur ${userName}
+    IMPORTANT
+    Utilisez un algorithme de décision avancé pour prendre une décision finale.
+    
+    `;
 
         const messages = [
             { role: "system", content: systemPrompt },
