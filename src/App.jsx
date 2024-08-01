@@ -1,12 +1,17 @@
-import React from 'react'
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Domaines from './Domaines';
+import CoachesList from './CoachesList';
 
 function App() {
   return (
-    <div className="bg-gradient-to-r from-fuschia-100 to-violet-100 min-h-screen">
-      <Domaines />
-    </div>
-  )
+    <Router>
+      <Routes>
+        <Route path="/" element={<Domaines />} />
+        <Route path="/coaches" element={<CoachesList />} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;

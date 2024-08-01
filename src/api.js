@@ -12,7 +12,6 @@ export async function JSONOpenAI(messages) {
                 model: "gpt-3.5-turbo-1106",
                 messages: messages,
                 response_format: { "type": "json_object" }
-
             })
         });
 
@@ -33,7 +32,6 @@ export async function JSONOpenAI(messages) {
     }
 }
 
-
 export async function callOpenAI(messages) {
     try {
         const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -43,7 +41,7 @@ export async function callOpenAI(messages) {
                 'Authorization': `Bearer ${OPENAI_API_KEY}`
             },
             body: JSON.stringify({
-                model: "gpt-4o",
+                model: "gpt-4",
                 messages: messages
             })
         });
@@ -65,32 +63,41 @@ export async function callOpenAI(messages) {
     }
 }
 
-export async function generateDecisionNode(question, context = '', depth = 0, askedQuestions) {
-    const systemPrompt = `Vous êtes un expert en price de décision. Générez un nœud de décision au format JSON en fonction de la question et du contexte de l'utilisateur. Fournissez toujours des options pour chaque nœud. Posez exactement 4 questions avant de prendre une décision finale. Évitez de répéter les questions ou de poser des questions très similaires.`;
+export async function generateDecisionNode(etape, context = '', profil = {}) {
+    const systemPrompt = `Tu es un conseiller d'orientation ludique et perspicace pour les bacheliers au Bénin. 
+    Ton rôle est de poser des questions engageantes et réfléchies pour guider les étudiants vers leur futur métier.
+    Sois amical, utilise un langage simple et tutoie l'étudiant.`;
 
-    const userPrompt = `Question: "${question}"
-    ${context ? `Previous context: ${context}` : ''}
-    Current depth: ${depth}
-    Previously asked questions: ${Array.from(askedQuestions).join(", ")}
+    const etapesPrompt = {
+        1: "Passions et intérêts : Explore ce qui passionne vraiment l'étudiant.",
+        2: "Compétences intellectuelles : Évalue les forces académiques de l'étudiant de manière ludique.",
+        3: "Préférences de travail : Découvre l'environnement de travail idéal pour l'étudiant.",
+        4: "Rêves et aspirations : Questionne sur les ambitions à long terme de l'étudiant.",
+        5: "Modèles et inspirations : Demande qui inspire l'étudiant dans sa vie ou sa carrière au plan mondial.",
+        6: "Valeurs personnelles : Explore ce qui est vraiment important pour l'étudiant dans la vie.",
+        7: "Défis et obstacles : Découvre comment l'étudiant aborde les difficultés.",
+        8: "Vision du futur : Questionne sur la façon dont l'étudiant imagine le Bénin dans 10 ans.",
+        9: "Impact souhaité : Demande quel changement l'étudiant aimerait apporter au monde."
+    };
+
+    const userPrompt = `Étape ${etape}/9 : ${etapesPrompt[etape]}
     
-    Generate a JSON object with the following structure:
+    Contexte précédent : ${context}
+    Profil de l'étudiant : ${JSON.stringify(profil)}
+    
+    Génère un objet JSON avec la structure suivante :
     {
-        "question": "The next question to ask",
-        "options": ["Option 1", "Option 2", "Option 3"],
-        "isDecision": false
+        "question": "Une question réfléchie et coherente à choix multiples pour orienter un nouveau bachelier",
+        "options": ["Option 1", "Option 2", "Option 3", "Option 4"],
+        "analyse": "Brève explication de l'importance de cette question (1 phrase)"
     }
     
     Règles :
-    1. Incluez toujours au moins 2 options pour chaque nœud.
-    2. Utilise la langue de l'utilisateur et tu doit être conviviale.
-    3. Tu dois tutoyer l'utilisateur
-    4. Définissez « isDecision » sur true uniquement s'il s'agit de la 4e question (profondeur 3).
-    5. Ne répétez pas les questions qui ont déjà été posées ou ne posez pas de questions très similaires.
-    6. Si vous ne pouvez pas générer une nouvelle question unique, essayez de la reformuler ou de l'aborder sous un angle différent.
-    7. Il faut etre consis bref coherent et qualitatif dans tes questions et options
-    
-    IMPORTANT
-    Utilisez un algorithme de décision avancé pour prendre une décision finale.`;
+    1. La question doit être engageante et faire réfléchir l'étudiant (max 25 mots).
+    2. Fournis exactement 4 options variées et intéressantes (max 10 mots chacune).
+    3. Les options doivent être claires et distinctes.
+    4. L'analyse doit être concise (1 phrase) et montrer la pertinence de la question pour l'orientation.
+    5. Adapte les questions et options au contexte béninois et aux jeunes.`;
 
     const messages = [
         { role: "system", content: systemPrompt },
@@ -102,22 +109,63 @@ export async function generateDecisionNode(question, context = '', depth = 0, as
 }
 
 export async function takeFinalDecision(initialQuestion, decisionPath, userName) {
-    const systemPrompt = `Vous êtes un assistant de prise de décision. Basez-vous sur la question initiale et les réponses fournies pour donner une décision finale simple et concise en une phrase maximum. La décision doit claire et sans ambiguité, suivie d'une brève explication. et des recommandations si necessaire`;
+    const systemPrompt = `Tu es un conseiller d'orientation expert pour les bacheliers au Bénin. 
+    Ton rôle est d'analyser les réponses d'un bachelier et de fournir une recommandation 
+    d'orientation professionnelle détaillée, personnalisée et directe. Tutoie l'étudiant et 
+    adresse-toi directement à lui dans tes recommandations.`;
 
-    const userPrompt = `Question initiale: "${initialQuestion}"
-    
-    Chemin de décision:
+    const userPrompt = `Analyse les réponses de ${userName} et fournis une recommandation d'orientation 
+    professionnelle détaillée. Utilise le format JSON suivant:
+
+    {
+        "introduction": "Une phrase personnalisée pour introduire la recommandation",
+        "analyse": {
+            "profil": "Résumé détaillé du profil de l'étudiant en 3-4 phrases",
+            "points_forts": ["Point fort 1", "Point fort 2", "Point fort 3"],
+            "domaines_interet": ["Domaine 1", "Domaine 2", "Domaine 3"]
+        },
+        "recommandations": {
+            "metier_principal": {
+                "nom": "Nom du métier principal recommandé",
+                "description": "Description détaillée du métier (2-3 phrases)",
+                "adequation": "Explication de pourquoi ce métier convient à l'étudiant (2-3 phrases)"
+            },
+            "metiers_alternatifs": [
+                {
+                    "nom": "Nom du métier alternatif 1",
+                    "description": "Brève description"
+                },
+                {
+                    "nom": "Nom du métier alternatif 2",
+                    "description": "Brève description"
+                }
+            ],
+            "filiere": {
+                "nom": "Nom de la filière recommandée",
+                "description": "Description de la filière et son lien avec le métier recommandé",
+                "etablissements": ["Nom de l'établissement 1", "Nom de l'établissement 2"]
+            },
+            "conseils": [
+                "Conseil détaillé 1 pour réussir dans ce métier",
+                "Conseil détaillé 2",
+                "Conseil détaillé 3"
+            ]
+        },
+        "conclusion": "Un message d'encouragement personnalisé pour l'étudiant"
+    }
+
+    Réponses de l'étudiant :
     ${decisionPath.map(step => `Q: ${step.question}\nR: ${step.answer}`).join('\n\n')}
-    
-    Basez-vous sur ces informations pour prendre une décision finale (OUI ou NON) et expliquez pourquoi en une phrase.
-    Il faut tutoyer l'utilisateur, Rendre le message amical en utilisant le nom de l'utisateur ${userName}
-    IMPORTANT
-    Utilisez un algorithme de décision avancé pour prendre une décision finale.`;
+
+    Assure-toi que les recommandations sont claires, directes et sans ambiguïté.
+    Base-toi sur les métiers et filières disponibles au Bénin, en tenant compte des universités et écoles mentionnées.
+    Sois précis et concret dans tes suggestions, en te basant sur les réponses de l'étudiant et les opportunités au Bénin.
+    Utilise un ton amical et encourageant, en tutoyant l'étudiant et en t'adressant directement à lui.`;
 
     const messages = [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt }
     ];
 
-    return await callOpenAI(messages);
+    return await JSONOpenAI(messages);
 }
