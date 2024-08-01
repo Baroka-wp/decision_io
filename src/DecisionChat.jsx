@@ -23,7 +23,7 @@ export default function DecisionChat({ domaine }) {
         if (storedName) {
             setUserName(storedName);
             setShowNameModal(false);
-            addMessageToChat(`Bonjour ${storedName} ! Je vais t'aider à prendre une décision. Qu'est-ce qui te préoccupes aujourd'hui ?`, false);
+            addMessageToChat(`Bonjour ${storedName} Qu'est-ce qui te préoccupes aujourd'hui ?`, false);
         }
     }, []);
 
@@ -57,7 +57,7 @@ export default function DecisionChat({ domaine }) {
     function addWelcomeMessage(name) {
         setMessages(prevMessages => [...prevMessages, {
             id: Date.now(),
-            content: `Bonjour ${name} ! Je vais t'aider à prendre une décision. Qu'est-ce qui te préoccupes aujourd'hui ?`,
+            content: `Bonjour ${name} ! Qu'est-ce qui te préoccupes aujourd'hui ?`,
             isUser: false
         }]);
     }
