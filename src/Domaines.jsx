@@ -5,7 +5,6 @@ import { Users, Heart, Briefcase, Coins, Leaf } from 'lucide-react';
 const Domaines = () => {
     const [domaine, setDomaine] = useState('');
     const [showChat, setShowChat] = useState(false);
-    const [windowHeight, setWindowHeight] = useState(window.innerHeight);
 
     useEffect(() => {
         const handleResize = () => setWindowHeight(window.innerHeight);
@@ -19,19 +18,19 @@ const Domaines = () => {
     };
 
     const domaines = [
-        { id: 'familiale/amical', label: 'Familiale/Amical', icon: Users },
+        { id: 'famil', label: 'Familial/Amical', icon: Users },
         { id: 'amoureux', label: 'Amoureux', icon: Heart },
         { id: 'travail', label: 'Travail', icon: Briefcase },
-        { id: 'investissement/argent', label: 'Investissement/Argent', icon: Coins },
+        { id: 'invest', label: 'Investissement/Argent', icon: Coins },
         { id: 'spirituel', label: 'Spirituel', icon: Leaf },
     ];
 
     return (
-        <div className="flex flex-col gap-10 items-center p-4" style={{ height: `${windowHeight}px` }}>
+        <div className="flex flex-col h-screen p-4">
             {showChat ? (
                 <DecisionChat domaine={domaine} />
             ) : (
-                <>
+                <div className="flex flex-col justify-center items-center h-full">
                     <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4 text-transparent bg-clip-text bg-gradient-to-r from-fuschia-600 to-violet-600">
                         Choisissez un domaine pour prendre une décision
                     </h1>
@@ -47,7 +46,7 @@ const Domaines = () => {
                             </button>
                         ))}
                     </div>
-                </>
+                </div>
             )}
         </div>
     );

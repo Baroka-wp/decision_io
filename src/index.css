@@ -4,6 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 body {
   font-family: 'Poppins', sans-serif;
   @apply min-h-screen flex flex-col;
@@ -146,5 +147,28 @@ body {
 @media (max-height: 500px) {
   .chat-container {
     @apply max-h-[calc(100vh-120px)];
+  }
+}
+.chat-container {
+  height: 100vh; /* prendre toute la hauteur de l'écran */
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-messages {
+  flex-grow: 1; /* prendre toute la place disponible */
+  overflow-y: auto; /* activer le défilement vertical */
+}
+
+/* Media query pour les petits écrans */
+@media (max-width: 768px) {
+  .chat-messages {
+    padding: 1rem; /* réduire les espacements pour les petits écrans */
+  }
+}
+
+@supports (-webkit-touch-callout: none) {
+  .h-screen {
+      height: -webkit-fill-available;
   }
 }
