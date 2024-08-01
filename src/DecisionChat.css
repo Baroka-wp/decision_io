@@ -1,0 +1,126 @@
+.decision-chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    max-width: 100vw;
+    overflow: hidden;
+}
+
+.decision-chat-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.decision-chat-logo {
+    height: 24px;
+    width: 24px;
+    margin-right: 10px;
+}
+
+.decision-chat-title {
+    font-size: 18px;
+    font-weight: bold;
+    background: linear-gradient(to right, #FF76BB, #A855F7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.decision-chat-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.decision-chat-messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.decision-chat-input {
+    display: flex;
+    padding: 10px;
+    background: linear-gradient(to right, #FF76BB, #A855F7);
+}
+
+.decision-chat-input-field {
+    flex-grow: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 20px 0 0 20px;
+    font-size: 16px;
+}
+
+.decision-chat-send-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 15px;
+    background: white;
+    border: none;
+    border-radius: 0 20px 20px 0;
+    color: #A855F7;
+}
+
+.decision-chat-send-text {
+    display: none;
+}
+
+.decision-chat-actions {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    background: white;
+    box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+}
+
+.decision-chat-action-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 15px;
+    margin: 0 5px;
+    background: linear-gradient(to right, #FF76BB, #A855F7);
+    border: none;
+    border-radius: 20px;
+    color: white;
+}
+
+.decision-chat-action-button span {
+    margin-left: 5px;
+}
+
+@media (min-width: 768px) {
+    .decision-chat-title {
+        font-size: 24px;
+    }
+
+    .decision-chat-send-text {
+        display: inline;
+        margin-left: 5px;
+    }
+
+    .decision-chat-action-button {
+        padding: 10px 20px;
+    }
+}
+
+/* Gestion du clavier virtuel sur mobile */
+@media (max-height: 500px) {
+    .decision-chat-body {
+        max-height: calc(100vh - 120px);
+    }
+}
+
+/* Empêcher le zoom sur les inputs pour mobile */
+@media (max-width: 768px) {
+    input[type="text"],
+    textarea {
+        font-size: 16px;
+    }
+}
