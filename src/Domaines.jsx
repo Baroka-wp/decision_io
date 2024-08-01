@@ -1,39 +1,58 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, PhoneCall, Download } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { generateDecisionNode, takeFinalDecision } from './api';
 import { genererPDF } from './utils/pdfUtils';
+import UserInfoModal from './UserInfoModal';
+import ProgressBar from './ProgressBar';
+import CharlesPresentation from './CharlesPresentation';
+
 
 const Domaines = () => {
-    const [etape, setEtape] = useState(0);
+    const [etape, setEtape] = useState(-1);
     const [reponses, setReponses] = useState([]);
     const [questionActuelle, setQuestionActuelle] = useState(null);
     const [decisionFinale, setDecisionFinale] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
+    const [showUserInfoModal, setShowUserInfoModal] = useState(false);
+    const [userInfo, setUserInfo] = useState(null);
+    const [analysisProgress, setAnalysisProgress] = useState(0);
+
+    const navigate = useNavigate();
 
     const etapes = [
-        "Choix de la formation",
-        "Aptitudes intellectuelles",
-        "Compétences",
-        "Préférences personnelles",
-        "Employabilité de la filière",
-        "Choix de l'institution",
-        "Employabilité globale",
+        "Passions et intérêts",
+        "Compétences intellectuelles",
+        "Préférences de travail",
+        "Rêves et aspirations",
+        "Modèles et inspirations",
+        "Valeurs personnelles",
         "Défis et obstacles",
         "Vision du futur",
         "Impact souhaité"
     ];
 
     useEffect(() => {
-        if (etape === 0) {
+        if (userInfo && etape === 0) {
             initierProcessus();
         }
-    }, []);
+    }, [userInfo, etape]);
 
     const initierProcessus = async () => {
         setIsLoading(true);
         const questionInitiale = await generateDecisionNode(1, "", {});
         setQuestionActuelle(questionInitiale);
         setIsLoading(false);
+    };
+
+    const handleUserInfoSubmit = (info) => {
+        setUserInfo(info);
+        setShowUserInfoModal(false);
+        setEtape(0);
+    };
+
+    const handleStartOrientation = () => {
+        setShowUserInfoModal(true);
     };
 
     const handleReponse = async (reponse) => {
@@ -52,11 +71,22 @@ const Domaines = () => {
             setIsLoading(false);
         } else {
             setIsLoading(true);
+            let progress = 0;
+            const intervalId = setInterval(() => {
+                progress += 5;
+                setAnalysisProgress(progress);
+                if (progress >= 100) {
+                    clearInterval(intervalId);
+                }
+            }, 500);
+
             const decision = await takeFinalDecision(
-                "Orientation scolaire pour un nouveau bachelier au Bénin",
+                "Orientation professionnelle pour un bachelier au Bénin",
                 nouvellesReponses,
-                "Étudiant"
+                userInfo.nom
             );
+            clearInterval(intervalId);
+            setAnalysisProgress(100);
             setDecisionFinale(JSON.parse(decision));
             setIsLoading(false);
         }
@@ -80,9 +110,9 @@ const Domaines = () => {
         </div>
     );
 
-    const DecisionFinaleComponent = ({ decision }) => (
+    const DecisionFinaleComponent = ({ decision, userInfo }) => (
         <div className="flex flex-col items-center justify-center max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-            <h2 className="text-3xl font-bold mb-6 text-center text-fuschia-600">Ton orientation professionnelle</h2>
+            <h2 className="text-3xl font-bold mb-6 text-center text-fuschia-600">Ton orientation professionnelle, {userInfo.nom}</h2>
 
             <div className="text-lg mb-8 text-center">
                 <p className="italic">{decision.introduction}</p>
@@ -156,14 +186,14 @@ const Domaines = () => {
 
             <div className="flex justify-center space-x-4">
                 <button
-                    onClick={() => {/* Logique pour parler à un coach */ }}
+                    onClick={() => navigate('/coaches')}
                     className="flex items-center justify-center px-6 py-3 bg-fuschia-500 text-white rounded-lg transition-all hover:bg-fuschia-600"
                 >
                     <PhoneCall size={20} className="mr-2" />
                     Parler à un coach
                 </button>
                 <button
-                    onClick={() => genererPDF(reponses, decision)}
+                    onClick={() => genererPDF(reponses, decision, userInfo.nom)}
                     className="flex items-center justify-center px-6 py-3 bg-violet-500 text-white rounded-lg transition-all hover:bg-violet-600"
                 >
                     <Download size={20} className="mr-2" />
@@ -175,15 +205,34 @@ const Domaines = () => {
 
     return (
         <div className="flex flex-col h-screen p-4">
+            {etape === -1 && (
+                <>
+                    <CharlesPresentation />
+                    <button
+                        onClick={handleStartOrientation}
+                        className="bg-gradient-to-r from-fuschia-500 to-violet-500 text-white font-bold py-2 px-4 rounded hover:from-fuschia-600 hover:to-violet-600"
+                    >
+                        Commencer mon orientation
+                    </button>
+                </>
+            )}
+            {showUserInfoModal && <UserInfoModal onSubmit={handleUserInfoSubmit} />}
             {isLoading ? (
-                <div className="flex justify-center items-center h-full">
-                    <div className="loader">
-                        <div></div><div></div><div></div><div></div>
-                    </div>
+                <div className="flex flex-col justify-center items-center h-full">
+                    {etape < etapes.length ? (
+                        <div className="loader">
+                            <div></div><div></div><div></div><div></div>
+                        </div>
+                    ) : (
+                        <>
+                            <h2 className="text-2xl font-bold mb-4">Analyse en cours...</h2>
+                            <ProgressBar progress={analysisProgress} />
+                        </>
+                    )}
                 </div>
             ) : decisionFinale ? (
-                <DecisionFinaleComponent decision={decisionFinale} />
-            ) : (
+                <DecisionFinaleComponent decision={decisionFinale} userInfo={userInfo} />
+            ) : etape >= 0 && (
                 <div className="flex flex-col justify-center items-center h-full">
                     {questionActuelle && (
                         <QuestionComponent

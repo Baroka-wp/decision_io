@@ -1,6 +1,6 @@
 import { jsPDF } from "jspdf";
 
-export function genererPDF(reponses, decisionFinale) {
+export function genererPDF(reponses, decisionFinale, nom) {
     const doc = new jsPDF();
 
     const addWrappedText = (text, x, y, maxWidth, lineHeight) => {
@@ -9,10 +9,18 @@ export function genererPDF(reponses, decisionFinale) {
         return y + (lines.length * lineHeight);
     };
 
+    const addNewPageIfNeeded = (yOffset, neededSpace) => {
+        if (yOffset + neededSpace > 280) {
+            doc.addPage();
+            return 20;
+        }
+        return yOffset;
+    };
+
     // Titre
     doc.setFontSize(22);
     doc.setTextColor(158, 0, 93); // Couleur fuschia
-    doc.text('Ta Fiche d\'Orientation Professionnelle', 105, 20, { align: 'center' });
+    doc.text(`Fiche d'Orientation Professionnelle de ${nom}`, 105, 20, { align: 'center' });
 
     let yOffset = 40;
 
@@ -20,7 +28,7 @@ export function genererPDF(reponses, decisionFinale) {
     doc.setFontSize(14);
     doc.setTextColor(0, 0, 0);
     yOffset = addWrappedText(decisionFinale.introduction, 20, yOffset, 170, 7);
-    yOffset += 10;
+    yOffset = addNewPageIfNeeded(yOffset, 20);
 
     // Profil
     doc.setFontSize(16);
@@ -30,7 +38,7 @@ export function genererPDF(reponses, decisionFinale) {
     doc.setFontSize(12);
     doc.setTextColor(0, 0, 0);
     yOffset = addWrappedText(decisionFinale.analyse.profil, 20, yOffset, 170, 7);
-    yOffset += 10;
+    yOffset = addNewPageIfNeeded(yOffset, 30);
 
     // Points forts et domaines d'intérêt
     doc.setFontSize(14);
@@ -39,14 +47,13 @@ export function genererPDF(reponses, decisionFinale) {
     decisionFinale.analyse.points_forts.forEach(point => {
         yOffset = addWrappedText(`• ${point}`, 25, yOffset, 165, 7);
     });
-    yOffset += 7;
+    yOffset = addNewPageIfNeeded(yOffset, 20);
     doc.text('Tes domaines d\'intérêt :', 20, yOffset);
     yOffset += 7;
     decisionFinale.analyse.domaines_interet.forEach(domaine => {
         yOffset = addWrappedText(`• ${domaine}`, 25, yOffset, 165, 7);
     });
-
-    yOffset += 10;
+    yOffset = addNewPageIfNeeded(yOffset, 20);
 
     // Métier principal recommandé
     doc.setFontSize(16);
@@ -61,8 +68,7 @@ export function genererPDF(reponses, decisionFinale) {
     yOffset = addWrappedText(decisionFinale.recommandations.metier_principal.description, 20, yOffset, 170, 7);
     yOffset += 7;
     yOffset = addWrappedText(decisionFinale.recommandations.metier_principal.adequation, 20, yOffset, 170, 7);
-
-    yOffset += 10;
+    yOffset = addNewPageIfNeeded(yOffset, 20);
 
     // Métiers alternatifs
     doc.setFontSize(16);
@@ -74,8 +80,7 @@ export function genererPDF(reponses, decisionFinale) {
     decisionFinale.recommandations.metiers_alternatifs.forEach(metier => {
         yOffset = addWrappedText(`• ${metier.nom}: ${metier.description}`, 25, yOffset, 165, 7);
     });
-
-    yOffset += 10;
+    yOffset = addNewPageIfNeeded(yOffset, 20);
 
     // Filière recommandée
     doc.setFontSize(16);
@@ -94,8 +99,7 @@ export function genererPDF(reponses, decisionFinale) {
     decisionFinale.recommandations.filiere.etablissements.forEach(etablissement => {
         yOffset = addWrappedText(`• ${etablissement}`, 25, yOffset, 165, 7);
     });
-
-    yOffset += 10;
+    yOffset = addNewPageIfNeeded(yOffset, 20);
 
     // Conseils
     doc.setFontSize(16);
@@ -108,8 +112,7 @@ export function genererPDF(reponses, decisionFinale) {
         yOffset = addWrappedText(`${index + 1}. ${conseil}`, 25, yOffset, 165, 7);
         yOffset += 5;
     });
-
-    yOffset += 10;
+    yOffset = addNewPageIfNeeded(yOffset, 20);
 
     // Conclusion
     doc.setFontSize(14);
@@ -121,5 +124,5 @@ export function genererPDF(reponses, decisionFinale) {
     doc.setTextColor(0, 0, 0);
     doc.text('Cette fiche d\'orientation est personnalisée pour toi. N\'hésite pas à en discuter avec un conseiller.', 105, 280, { align: 'center' });
 
-    doc.save('ta-fiche-orientation-professionnelle.pdf');
+    doc.save(`fiche-orientation-professionnelle-${nom}.pdf`);
 }

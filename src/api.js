@@ -73,7 +73,7 @@ export async function generateDecisionNode(etape, context = '', profil = {}) {
         2: "Compétences intellectuelles : Évalue les forces académiques de l'étudiant de manière ludique.",
         3: "Préférences de travail : Découvre l'environnement de travail idéal pour l'étudiant.",
         4: "Rêves et aspirations : Questionne sur les ambitions à long terme de l'étudiant.",
-        5: "Modèles et inspirations : Demande qui inspire l'étudiant dans sa vie ou sa carrière.",
+        5: "Modèles et inspirations : Demande qui inspire l'étudiant dans sa vie ou sa carrière au plan mondial.",
         6: "Valeurs personnelles : Explore ce qui est vraiment important pour l'étudiant dans la vie.",
         7: "Défis et obstacles : Découvre comment l'étudiant aborde les difficultés.",
         8: "Vision du futur : Questionne sur la façon dont l'étudiant imagine le Bénin dans 10 ans.",
@@ -93,8 +93,8 @@ export async function generateDecisionNode(etape, context = '', profil = {}) {
     }
     
     Règles :
-    1. La question doit être engageante et faire réfléchir l'étudiant (max 30 mots).
-    2. Fournis exactement 4 options variées et intéressantes (max 15 mots chacune).
+    1. La question doit être engageante et faire réfléchir l'étudiant (max 25 mots).
+    2. Fournis exactement 4 options variées et intéressantes (max 10 mots chacune).
     3. Les options doivent être claires et distinctes.
     4. L'analyse doit être concise (1 phrase) et montrer la pertinence de la question pour l'orientation.
     5. Adapte les questions et options au contexte béninois et aux jeunes.`;
