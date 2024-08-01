@@ -2,9 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { jsPDF } from "jspdf";
 import { callOpenAI } from './api';
 import { Send, RotateCcw, Save, User } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import logo from './assets/logo.png';
 
-export default function DecisionChat() {
+export default function DecisionChat({ domaine }) {
     const [messages, setMessages] = useState([]);
     const [userInput, setUserInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -14,6 +15,7 @@ export default function DecisionChat() {
     const [showNewConversation, setShowNewConversation] = useState(false);
     const [showNameModal, setShowNameModal] = useState(true);
     const [userName, setUserName] = useState('');
+    const [windowHeight, setWindowHeight] = useState(window.innerHeight);
     const chatContainerRef = useRef(null);
 
     useEffect(() => {
@@ -21,9 +23,15 @@ export default function DecisionChat() {
         if (storedName) {
             setUserName(storedName);
             setShowNameModal(false);
-            addMessageToChat(`Bonjour ${storedName} ! Je vais t'aider à prendre une décision. Qu'est-ce qui te préoccupes aujourd'hui ? 
-                ASTUCE: Pose une question dont la réponse est OUI ou NON`, false);
+            addMessageToChat(`Bonjour ${storedName} ! Je vais t'aider à prendre une décision. Qu'est-ce qui te préoccupes aujourd'hui ?`, false);
         }
+    }, []);
+
+
+    useEffect(() => {
+        const handleResize = () => setWindowHeight(window.innerHeight);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
     }, []);
 
     useEffect(() => {
@@ -49,8 +57,7 @@ export default function DecisionChat() {
     function addWelcomeMessage(name) {
         setMessages(prevMessages => [...prevMessages, {
             id: Date.now(),
-            content: `Bonjour ${name} ! Je vais t'aider à prendre une décision. Qu'est-ce qui te préoccupes aujourd'hui ? 
-            ASTUCE: Pose une question dont la réponse est OUI ou NON`,
+            content: `Bonjour ${name} ! Je vais t'aider à prendre une décision. Qu'est-ce qui te préoccupes aujourd'hui ?`,
             isUser: false
         }]);
     }
@@ -215,13 +222,97 @@ export default function DecisionChat() {
     }
 
     return (
-        <div className="container mx-auto flex flex-col h-screen">
-            <header className="sticky top-0 left-0 w-full bg-white py-4 mb-2">
-                <div className="container mx-auto flex justify-center items-center">
-                    <img src={logo} alt="Logo" className="h-8 w-8 mr-4" />
-                    <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-fuschia-600 to-violet-600 mb-0 text-center">Décision</h1>
-                </div>
+        <div className="flex flex-col h-full" style={{ height: `${windowHeight}px` }}>
+            <header className="flex-shrink-0 bg-white py-2 px-4 flex justify-center items-center">
+                <img src={logo} alt="Logo" className="h-6 w-6 mr-2" />
+                <h1 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-fuschia-600 to-violet-600">
+                    Décision : {domaine}
+                </h1>
             </header>
+            <div className="flex-grow flex flex-col overflow-hidden">
+                <div
+                    ref={chatContainerRef}
+                    className="flex-grow overflow-y-auto p-4 space-y-4"
+                >
+                    <AnimatePresence>
+                        {messages.map((message, index) => (
+                            <motion.div
+                                key={index}
+                                initial={{ opacity: 0, y: 50 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -50 }}
+                                transition={{ duration: 0.5 }}
+                                className={`p-3 rounded-lg ${message.isUser
+                                    ? 'bg-gradient-to-r from-fuschia-200 to-violet-200 ml-auto'
+                                    : 'bg-gradient-to-r from-fuschia-100 to-violet-100 mr-auto'
+                                    } max-w-[80%]`}
+                            >
+                                {message.content}
+                                {message.options && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.3, duration: 0.5 }}
+                                        className="mt-2 flex flex-wrap gap-2"
+                                    >
+                                        {message.options.map((option, optionIndex) => (
+                                            <button
+                                                key={optionIndex}
+                                                onClick={() => handleOptionClick(option)}
+                                                className="bg-gradient-to-r from-fuschia-500 to-violet-500 text-white px-2 py-1 rounded text-sm"
+                                            >
+                                                {option}
+                                            </button>
+                                        ))}
+                                    </motion.div>
+                                )}
+                            </motion.div>
+                        ))}
+                    </AnimatePresence>
+                    {isLoading && (
+                        <div className="loader mr-auto">
+                            <div></div><div></div><div></div><div></div>
+                        </div>
+                    )}
+                </div>
+                <div className="flex-shrink-0 p-4 bg-gradient-to-r from-fuschia-200 to-violet-200">
+                    <div className="flex items-center">
+                        <input
+                            type="text"
+                            value={userInput}
+                            onChange={(e) => setUserInput(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && handleUserInput()}
+                            placeholder="Posez votre question..."
+                            className="flex-grow p-2 border border-fuschia-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-fuschia-500"
+                        />
+                        <button
+                            onClick={handleUserInput}
+                            className="bg-gradient-to-r from-fuschia-500 to-violet-500 text-white px-4 py-2 rounded-r-lg flex items-center"
+                        >
+                            <Send className="mr-2" size={18} />
+                            Envoyer
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {showNewConversation && (
+                <div className="flex-shrink-0 mt-4 flex justify-center space-x-2 p-2">
+                    <button
+                        onClick={startNewConversation}
+                        className="bg-gradient-to-r from-fuschia-500 to-violet-500 text-white px-4 py-2 rounded-full flex items-center"
+                    >
+                        <RotateCcw className="mr-2" size={18} />
+                        Nouvelle
+                    </button>
+                    <button
+                        onClick={saveChatToPdf}
+                        className="bg-gradient-to-r from-fuschia-500 to-violet-500 text-white px-4 py-2 rounded-full flex items-center"
+                    >
+                        <Save className="mr-2" size={18} />
+                        PDF
+                    </button>
+                </div>
+            )}
             {showNameModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
                     <div className="bg-white p-6 rounded-lg w-full max-w-md">
@@ -243,66 +334,6 @@ export default function DecisionChat() {
                             Commencer
                         </button>
                     </div>
-                </div>
-            )}
-            <div className="chat-container bg-white rounded-lg shadow overflow-hidden flex flex-col h-screen">
-                <div ref={chatContainerRef} className="messages-container p-4 scrollbar-hide flex flex-col">
-                    {messages.map((message, index) => (
-                        <div key={index} className={`message mb-4 p-4 rounded-lg ${message.isUser ? 'bg-gradient-to-r from-fuschia-200 to-violet-200 ml-auto' : 'bg-gradient-to-r from-fuschia-100 to-violet-100 mr-auto'}`}>
-                            {message.content}
-                            {message.options && (
-                                <div className="mt-2 flex flex-wrap gap-2">
-                                    {message.options.map((option, optionIndex) => (
-                                        <button key={optionIndex} onClick={() => handleOptionClick(option)} className="bg-gradient-to-r from-fuschia-500 to-violet-500 text-white px-3 py-1 rounded text-sm">
-                                            {option}
-                                        </button>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    ))}
-                    {isLoading && (
-                        <div className="loader mb-4 p-4 rounded-lg bg-gradient-to-r from-fuschia-100 to-violet-100 mr-auto">
-                            <div></div><div></div><div></div><div></div>
-                        </div>
-                    )}
-                </div>
-                <div className="input-container bg-gradient-to-r from-fuschia-200 to-violet-200 fixed bottom-0 w-full p-4">
-                    <div className="flex items-center">
-                        <input
-                            type="text"
-                            value={userInput}
-                            onChange={(e) => setUserInput(e.target.value)}
-                            onKeyPress={(e) => e.key === 'Enter' && handleUserInput()}
-                            placeholder="Posez votre question..."
-                            className="flex-grow p-2 border border-fuschia-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-fuschia-500"
-                        />
-                        <button
-                            onClick={handleUserInput}
-                            className="bg-gradient-to-r from-fuschia-500 to-violet-500 text-white px-4 py-2 rounded-r-lg flex items-center"
-                        >
-                            <Send className="mr-2" size={18} />
-                            Envoyer
-                        </button>
-                    </div>
-                </div>
-            </div>
-            {showNewConversation && (
-                <div className="mt-4 flex justify-center space-x-2">
-                    <button
-                        onClick={startNewConversation}
-                        className="bg-gradient-to-r from-fuschia-500 to-violet-500 text-white px-4 py-2 rounded-full flex items-center"
-                    >
-                        <RotateCcw className="mr-2" size={18} />
-                        Nouvelle
-                    </button>
-                    <button
-                        onClick={saveChatToPdf}
-                        className="bg-gradient-to-r from-fuschia-500 to-violet-500 text-white px-4 py-2 rounded-full flex items-center"
-                    >
-                        <Save className="mr-2" size={18} />
-                        PDF
-                    </button>
                 </div>
             )}
         </div>
