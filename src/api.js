@@ -1,3 +1,4 @@
+import axios from 'axios';
 const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
 
 export async function JSONOpenAI(messages) {
@@ -169,3 +170,84 @@ export async function takeFinalDecision(initialQuestion, decisionPath, userName)
 
     return await JSONOpenAI(messages);
 }
+
+
+// const API_URL = 'http://localhost:5001/api';
+const API_URL = import.meta.env.VITE_API_URL
+
+const api = axios.create({
+    baseURL: API_URL,
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
+
+api.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem('coachToken');
+        if (token) {
+            config.headers['Authorization'] = 'Bearer ' + token;
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
+
+export { api };
+
+
+export const coachesList = [
+    {
+        id: 1,
+        nom: "Dr. Désiré",
+        diplomes: "Docteur en Management",
+        experience: "Inspecteur général des affaires étrangères du Bénin depuis 2015",
+        specialites: [
+            "Management et leadership",
+            "Affaires internationales et diplomatie",
+            "Analyse stratégique et organisation",
+            "Audit et contrôle de gestion"
+        ],
+        parcours: [
+            "Inspecteur Général au Ministère des Affaires Etrangères et de la Coopération",
+            "Directeur Associé à Cerpos Afrique"
+        ],
+        formation: [
+            "Economie et Gestion des Entreprises à Université de Paris I Panthéon-Sorbonne",
+            "Spécialité Prospective Innovation Analyse Stratégique et Organisation au CNAM Paris",
+            "AUDIT ET CONTROLE DE GESTION à Pigier"
+        ],
+        email: "yassodesire@yahoo.fr",
+        tel: "+229 66 54 76 09",
+        prix: 5000,
+        image: "https://res.cloudinary.com/baroka/image/upload/v1722555812/382455218_7003862366299206_5996969636059975263_n_quywfp.jpg"
+    },
+    {
+        id: 2,
+        nom: "Mr Christian David Kpondehou",
+        diplomes: "Leadership/Business, van Duyse Entrepreneurial Leadership Institute - VELI Bénin",
+        experience: "Président & Fondateur de Africa Diaspora Network Japan, Fondateur de Africa Samurai",
+        specialites: [
+            "Leadership entrepreneurial",
+            "Réseautage international",
+            "Développement des affaires Afrique-Japon",
+            "Gestion d'organisations à but non lucratif"
+        ],
+        parcours: [
+            "Président & Fondateur, Africa Diaspora Network Japan",
+            "Fondateur et Président du Conseil, Africa Samurai"
+        ],
+        formation: [
+            "Leadership/Business à van Duyse Entrepreneurial Leadership Institute - VELI Bénin",
+            "Université d'Abomey Calavi (UAC)",
+            "LYCEE CLASSIQUE ET MODERNE 1 DE DALOA, TCB (2008-2009)"
+        ],
+        localisation: "Awaji-shi, Hyogo, Japon",
+        email: "davidkpondehou@gmail.com",
+        tel: "+81912345678",
+        prix: 5000,
+        image: "https://res.cloudinary.com/baroka/image/upload/v1722556548/451224832_8165666756798644_8463613308947712322_n_o6csgs.jpg"
+    }
+];
