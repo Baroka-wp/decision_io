@@ -29,7 +29,7 @@ const DecisionFinaleComponent = ({ decision, userInfo, onback }) => {
                     <div>
                         <h4 className="font-semibold mb-2">Tes points forts :</h4>
                         <ul className="list-disc pl-5">
-                            {decision.analyse.points_forts.map((point, index) => (
+                            {decision.analyse.points_forts?.map((point, index) => (
                                 <li key={index}>{point}</li>
                             ))}
                         </ul>
@@ -37,7 +37,7 @@ const DecisionFinaleComponent = ({ decision, userInfo, onback }) => {
                     <div>
                         <h4 className="font-semibold mb-2">Tes domaines d'intérêt :</h4>
                         <ul className="list-disc pl-5">
-                            {decision.analyse.domaines_interet.map((domaine, index) => (
+                            {decision.analyse.domaines_interet?.map((domaine, index) => (
                                 <li key={index}>{domaine}</li>
                             ))}
                         </ul>
@@ -55,7 +55,7 @@ const DecisionFinaleComponent = ({ decision, userInfo, onback }) => {
             <div className="mb-8 w-full">
                 <h3 className="text-2xl font-semibold mb-4 text-violet-600">Autres métiers à considérer</h3>
                 <ul className="list-disc pl-5">
-                    {decision.recommandations.metiers_alternatifs.map((metier, index) => (
+                    {decision.recommandations.metiers_alternatifs?.map((metier, index) => (
                         <li key={index} className="mb-2">
                             <span className="font-medium">{metier.nom}</span> : {metier.description}
                         </li>
@@ -69,7 +69,7 @@ const DecisionFinaleComponent = ({ decision, userInfo, onback }) => {
                 <p className="mb-4">{decision.recommandations.filiere.description}</p>
                 <h5 className="font-semibold mb-2">Établissements proposant cette filière :</h5>
                 <ul className="list-disc pl-5">
-                    {decision.recommandations.filiere.etablissements.map((etablissement, index) => (
+                    {decision.recommandations.filiere.etablissements?.map((etablissement, index) => (
                         <li key={index}>{etablissement}</li>
                     ))}
                 </ul>
@@ -78,7 +78,7 @@ const DecisionFinaleComponent = ({ decision, userInfo, onback }) => {
             <div className="mb-8 w-full">
                 <h3 className="text-2xl font-semibold mb-4 text-violet-600">Conseils pour réussir</h3>
                 <ul className="list-decimal pl-5">
-                    {decision.recommandations.conseils.map((conseil, index) => (
+                    {decision.recommandations.conseils?.map((conseil, index) => (
                         <li key={index} className="mb-2">{conseil}</li>
                     ))}
                 </ul>
