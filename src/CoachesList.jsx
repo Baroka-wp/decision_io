@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { api } from './api';
 
 const KKIA_PAY = import.meta.env.VITE_KKIA_PAY_KEY;
+console.log(KKIA_PAY)
 
 const CoachesList = () => {
     const navigate = useNavigate();
@@ -46,7 +47,7 @@ const CoachesList = () => {
 
     const handlePayment = async () => {
         openKkiapayWidget({
-            amount: selectedCoach.prix,
+            amount: selectedCoach.price,
             position: "center",
             callback: "",
             data: "",
@@ -55,6 +56,7 @@ const CoachesList = () => {
         });
 
         addSuccessListener(async (response) => {
+            console.log(response)
             await api.post('/appointments', {
                 user_id: userInfo.id,
                 coach_id: selectedCoach.id,
