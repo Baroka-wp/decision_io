@@ -5,7 +5,7 @@ import UserInfoModal from './UserInfoModal';
 import ProgressBar from './ProgressBar';
 import CharlesPresentation from './CharlesPresentation';
 import DecisionFinaleComponent from './DecisionFinaleComponent';
-import axios from 'axios';
+import { api } from './api';
 
 const Domaines = () => {
     const [etape, setEtape] = useState(-1);
@@ -22,12 +22,12 @@ const Domaines = () => {
         "Passions et intérêts",
         "Compétences intellectuelles",
         "Préférences de travail",
-        // "Rêves et aspirations",
-        // "Modèles et inspirations",
-        // "Valeurs personnelles",
-        // "Défis et obstacles",
-        // "Vision du futur",
-        // "Impact souhaité"
+        "Rêves et aspirations",
+        "Inspirations",
+        "Valeurs personnelles",
+        "Défis et obstacles",
+        "Vision du futur",
+        "Impact souhaité"
     ];
     useEffect(() => {
         if (userInfo && etape === 0) {
@@ -62,10 +62,15 @@ const Domaines = () => {
     const handleStartOrientation = () => {
         const storedUserName = localStorage.getItem('userName');
         if (storedUserName) {
-            const user = JSON.parse(storedUserName);
-            setUserInfo({ id: user.id, name: user.name, phoneNumber: user.phoneNumber });
-            setEtape(0);
-            initierProcessus();
+            try {
+                const user = JSON.parse(storedUserName);
+                setUserInfo({ id: user.id, name: user.name, phoneNumber: user.phoneNumber });
+                setEtape(0);
+                initierProcessus();
+
+            } catch (err) {
+                setShowUserInfoModal(true);
+            }
         } else {
             setShowUserInfoModal(true);
         }
@@ -76,7 +81,7 @@ const Domaines = () => {
         if (storedUserName) {
             const user = JSON.parse(storedUserName);
             setUserInfo({ id: user.id, name: user.name, phoneNumber: user.phoneNumber });
-            axios.get(`http://localhost:5001/api/history/session/${user.id}`)
+            api.get(`/history/session/${user.id}`)
                 .then(response => {
                     if (response.data) {
                         setHasFinalDecision(true)
@@ -122,12 +127,12 @@ const Domaines = () => {
             try {
                 // Stocker l'historique de la discussion
                 if (hasFinalDecision) {
-                    await axios.put('http://localhost:5001/api/history', {
+                    await api.put('/history', {
                         user_id: userInfo.id,
                         session_data: JSON.stringify(nouvellesReponses)
                     });
                 } else {
-                    await axios.post('http://localhost:5001/api/history', {
+                    await api.post('/history', {
                         user_id: userInfo.id,
                         session_data: JSON.stringify(nouvellesReponses)
                     });
@@ -140,7 +145,7 @@ const Domaines = () => {
                 );
 
                 // Stocker la décision finale
-                await axios.post('http://localhost:5001/api/history/final-decision', {
+                await api.post('/history/final-decision', {
                     user_id: userInfo.id,
                     decision: decision
                 });
@@ -151,7 +156,6 @@ const Domaines = () => {
                 setDecisionFinale(JSON.parse(decision));
             } catch (error) {
                 console.error('Erreur lors de la finalisation de la décision:', error);
-                // Gérer l'erreur (par exemple, afficher un message à l'utilisateur)
             } finally {
                 setIsLoading(false);
             }

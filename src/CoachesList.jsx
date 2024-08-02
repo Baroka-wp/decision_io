@@ -1,62 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Calendar, X, CreditCard, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { api } from './api';
 
 const KKIA_PAY = import.meta.env.VITE_KKIA_PAY_KEY;
-
-const coachesList = [
-    {
-        id: 1,
-        nom: "Dr. Désiré",
-        diplomes: "Docteur en Management",
-        experience: "Inspecteur général des affaires étrangères du Bénin depuis 2015",
-        specialites: [
-            "Management et leadership",
-            "Affaires internationales et diplomatie",
-            "Analyse stratégique et organisation",
-            "Audit et contrôle de gestion"
-        ],
-        parcours: [
-            "Inspecteur Général au Ministère des Affaires Etrangères et de la Coopération",
-            "Directeur Associé à Cerpos Afrique"
-        ],
-        formation: [
-            "Economie et Gestion des Entreprises à Université de Paris I Panthéon-Sorbonne",
-            "Spécialité Prospective Innovation Analyse Stratégique et Organisation au CNAM Paris",
-            "AUDIT ET CONTROLE DE GESTION à Pigier"
-        ],
-        email: "yassodesire@yahoo.fr",
-        tel: "+229 66 54 76 09",
-        prix: 5000,
-        image: "https://res.cloudinary.com/baroka/image/upload/v1722555812/382455218_7003862366299206_5996969636059975263_n_quywfp.jpg"
-    },
-    {
-        id: 2,
-        nom: "Mr Christian David Kpondehou",
-        diplomes: "Leadership/Business, van Duyse Entrepreneurial Leadership Institute - VELI Bénin",
-        experience: "Président & Fondateur de Africa Diaspora Network Japan, Fondateur de Africa Samurai",
-        specialites: [
-            "Leadership entrepreneurial",
-            "Réseautage international",
-            "Développement des affaires Afrique-Japon",
-            "Gestion d'organisations à but non lucratif"
-        ],
-        parcours: [
-            "Président & Fondateur, Africa Diaspora Network Japan",
-            "Fondateur et Président du Conseil, Africa Samurai"
-        ],
-        formation: [
-            "Leadership/Business à van Duyse Entrepreneurial Leadership Institute - VELI Bénin",
-            "Université d'Abomey Calavi (UAC)",
-            "LYCEE CLASSIQUE ET MODERNE 1 DE DALOA, TCB (2008-2009)"
-        ],
-        localisation: "Awaji-shi, Hyogo, Japon",
-        email: "davidkpondehou@gmail.com",
-        tel: "+81912345678",
-        prix: 5000,
-        image: "https://res.cloudinary.com/baroka/image/upload/v1722556548/451224832_8165666756798644_8463613308947712322_n_o6csgs.jpg"
-    }
-];
 
 const CoachesList = () => {
     const navigate = useNavigate();
@@ -64,6 +11,31 @@ const CoachesList = () => {
     const [showModal, setShowModal] = useState(false);
     const [showDetailsModal, setShowDetailsModal] = useState(false);
     const [paymentSuccess, setPaymentSuccess] = useState(false);
+    const [coachesList, setCoachList] = useState([])
+    const [isLoading, setIsLoading] = useState(false);
+    const [userInfo, setUserInfo] = useState(null);
+
+    useEffect(() => {
+        const fecthCoaches = async () => {
+            setIsLoading(true)
+            const response = await api.get(`/coaches`);
+            setCoachList(response.data)
+            setIsLoading(false)
+        }
+
+        const fecthUserData = () => {
+            const storedUserName = localStorage.getItem('userName');
+            if (storedUserName) {
+                const user = JSON.parse(storedUserName);
+                setUserInfo({ id: user.id, name: user.name, phoneNumber: user.phoneNumber });
+            } else {
+                navigate('/');
+            }
+        }
+        fecthCoaches();
+        fecthUserData();
+
+    }, [])
 
     const handleAppointmentRequest = (coach) => {
         setShowDetailsModal(false)
@@ -72,26 +44,44 @@ const CoachesList = () => {
 
     };
 
-    const handlePayment = () => {
-        openKkiapayWidget({
-            amount: selectedCoach.prix,
-            position: "center",
-            callback: "",
-            data: "",
-            theme: "orange",
-            key: KKIA_PAY
-        });
+    const handlePayment = async () => {
+        // openKkiapayWidget({
+        //     amount: selectedCoach.prix,
+        //     position: "center",
+        //     callback: "",
+        //     data: "",
+        //     theme: "orange",
+        //     key: KKIA_PAY
+        // });
 
-        addSuccessListener(async (response) => {
-            console.log({ response });
-            setPaymentSuccess(true);
-            setTimeout(() => {
-                setPaymentSuccess(false);
-                setShowModal(false);
-                navigate('/');
-            }, 3000);
-        });
+        // addSuccessListener(async (response) => {
+        //     console.log({ response });
+        //     setPaymentSuccess(true);
+        //     setTimeout(() => {
+        //         setPaymentSuccess(false);
+        //         setShowModal(false);
+        //         navigate('/');
+        //     }, 3000);
+        // });
+
+
+
+        await api.post('/appointments', {
+            user_id: userInfo.id,
+            coach_id: selectedCoach.id,
+            date_time: null
+        })
+
+        setPaymentSuccess(true);
+
+        setTimeout(() => {
+            setPaymentSuccess(false);
+            setShowModal(false);
+            navigate('/');
+        }, 2000);
     };
+
+    console.log({ selectedCoach })
 
     const closeModal = () => {
         setShowModal(false);
@@ -108,6 +98,14 @@ const CoachesList = () => {
         setSelectedCoach(null);
     };
 
+    const Loader = () => (
+        <div className="flex justify-center items-center">
+            <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-fuschia-500"></div>
+        </div>
+    );
+
+    if (isLoading) return <Loader />
+
     return (
         <div className="container mx-auto p-4">
             <button onClick={() => navigate(-1)} className="mb-4 flex items-center text-fuschia-600">
@@ -119,20 +117,20 @@ const CoachesList = () => {
                 {coachesList.map(coach => (
                     <div key={coach.id} className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col h-full">
                         <div className="h-64 bg-gray-200">
-                            <img src={coach.image} alt={coach.nom} className="w-full h-full object-cover" />
+                            <img src={coach.photo_url} alt={coach.name} className="w-full h-full object-cover" />
                         </div>
                         <div className="p-4 flex-grow flex flex-col">
-                            <h2 className="text-xl font-semibold mb-2 text-violet-600">{coach.nom}</h2>
+                            <h2 className="text-xl font-semibold mb-2 text-violet-600">{coach.name}</h2>
                             <p className="text-gray-600 text-sm mb-1">{coach.diplomes}</p>
                             <p className="text-gray-600 text-sm mb-2 line-clamp-2">{coach.experience}</p>
-                            <p className="text-fuschia-600 font-semibold mb-2">Prix: {coach.prix} FCFA</p>
+                            <p className="text-fuschia-600 font-semibold mb-2">Prix: {coach.price} FCFA</p>
                             <div className="mt-auto pt-4 space-y-2">
                                 <button
                                     onClick={() => handleAppointmentRequest(coach)}
                                     className="w-full bg-gradient-to-r from-fuschia-500 to-violet-500 text-white font-bold py-2 px-4 rounded hover:from-fuschia-600 hover:to-violet-600 flex items-center justify-center"
                                 >
                                     <Calendar size={20} className="mr-2" />
-                                    Rendez-vous
+                                    Demande de rendez-vous
                                 </button>
                                 <button
                                     onClick={() => handleShowDetails(coach)}
@@ -158,10 +156,10 @@ const CoachesList = () => {
                         </button>
                         <h2 className="text-2xl font-bold mb-4 text-fuschia-600">Demande de rendez-vous</h2>
                         <p className="mb-4">
-                            Votre demande sera envoyée à {selectedCoach.nom}. Le coach vous contactera pour fixer une date de coaching.
+                            Votre demande sera envoyée à {selectedCoach.name}. Le coach vous contactera pour fixer une date de coaching.
                         </p>
                         <p className="mb-4 font-semibold">
-                            Prix du coaching : {selectedCoach.prix} FCFA
+                            Prix du coaching : {selectedCoach.price} FCFA
                         </p>
                         {paymentSuccess ? (
                             <div className="text-center">
@@ -187,7 +185,7 @@ const CoachesList = () => {
                     <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
                         {/* En-tête du modal */}
                         <div className="p-6 bg-gradient-to-r from-fuschia-500 to-violet-500 text-white relative">
-                            <h2 className="text-3xl font-bold">{selectedCoach.nom}</h2>
+                            <h2 className="text-3xl font-bold">{selectedCoach.name}</h2>
                             <button
                                 onClick={closeDetailsModal}
                                 className="absolute top-4 right-4 text-white hover:text-gray-200 transition-colors"
@@ -201,12 +199,12 @@ const CoachesList = () => {
                             <div className="flex flex-col md:flex-row gap-6">
                                 {/* Colonne de gauche */}
                                 <div className="md:w-1/3">
-                                    <img src={selectedCoach.image} alt={selectedCoach.nom} className="w-full h-64 object-cover rounded-lg shadow-md mb-4" />
+                                    <img src={selectedCoach.photo_url} alt={selectedCoach.name} className="w-full h-64 object-cover rounded-lg shadow-md mb-4" />
                                     <div className="bg-gray-100 p-4 rounded-lg">
                                         <h3 className="font-semibold text-lg mb-2 text-fuschia-600">Contact</h3>
                                         <p className="text-sm">Email: {selectedCoach.email}</p>
-                                        <p className="text-sm">Tél: {selectedCoach.tel}</p>
-                                        <p className="text-sm mt-2">Prix: <span className="font-bold text-fuschia-600">{selectedCoach.prix} FCFA</span></p>
+                                        <p className="text-sm">Tél: {selectedCoach.phone_number}</p>
+                                        <p className="text-sm mt-2">Prix: <span className="font-bold text-fuschia-600">{selectedCoach.price} FCFA</span></p>
                                     </div>
                                 </div>
 
@@ -223,7 +221,7 @@ const CoachesList = () => {
                                     <div className="mb-6">
                                         <h3 className="font-semibold text-xl mb-2 text-violet-600">Spécialités</h3>
                                         <ul className="list-disc pl-5">
-                                            {selectedCoach.specialites.map((specialite, index) => (
+                                            {selectedCoach.specialites && selectedCoach.specialites.map((specialite, index) => (
                                                 <li key={index} className="mb-1">{specialite}</li>
                                             ))}
                                         </ul>
@@ -231,7 +229,7 @@ const CoachesList = () => {
                                     <div className="mb-6">
                                         <h3 className="font-semibold text-xl mb-2 text-violet-600">Parcours</h3>
                                         <ul className="list-disc pl-5">
-                                            {selectedCoach.parcours.map((poste, index) => (
+                                            {selectedCoach.parcours && selectedCoach.parcours.map((poste, index) => (
                                                 <li key={index} className="mb-1">{poste}</li>
                                             ))}
                                         </ul>
@@ -239,7 +237,7 @@ const CoachesList = () => {
                                     <div>
                                         <h3 className="font-semibold text-xl mb-2 text-violet-600">Formation</h3>
                                         <ul className="list-disc pl-5">
-                                            {selectedCoach.formation.map((formation, index) => (
+                                            {selectedCoach.formation && selectedCoach.formation.map((formation, index) => (
                                                 <li key={index} className="mb-1">{formation}</li>
                                             ))}
                                         </ul>

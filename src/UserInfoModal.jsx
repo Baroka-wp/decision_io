@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import PhoneInput from 'react-phone-number-input';
+import { api } from './api';
 import 'react-phone-number-input/style.css';
 
 const UserInfoModal = ({ onSubmit, onExistingDecision }) => {
@@ -21,10 +21,10 @@ const UserInfoModal = ({ onSubmit, onExistingDecision }) => {
         setIsLoading(true);
 
         try {
-            const checkUserResponse = await axios.get(`http://localhost:5001/api/users/${phoneNumber}`);
+            const checkUserResponse = await api.get(`/users/${phoneNumber}`);
 
             if (checkUserResponse.data) {
-                const historyResponse = await axios.get(`http://localhost:5001/api/history/session/${checkUserResponse.data.id}`);
+                const historyResponse = await api.get(`/history/session/${checkUserResponse.data.id}`);
                 const finalDecision = historyResponse.data.find(entry => entry.final_decision);
 
                 if (finalDecision) {
@@ -34,7 +34,7 @@ const UserInfoModal = ({ onSubmit, onExistingDecision }) => {
 
                 onSubmit({ id: checkUserResponse.data.id, name: checkUserResponse.data.name, phoneNumber });
             } else {
-                const createUserResponse = await axios.post('http://localhost:5001/api/users', { name, phone_number: phoneNumber });
+                const createUserResponse = await api.post('/users', { name, phone_number: phoneNumber });
                 onSubmit({ id: createUserResponse.data.user.id, name, phoneNumber: createUserResponse.data.user.phone_number });
             }
         } catch (err) {

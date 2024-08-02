@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Play, RefreshCw, FileText, PhoneCall } from 'lucide-react';
+import { api } from './api';
 
 const CharlesPresentation = ({ onStartOrientation, onViewExistingDecision }) => {
     const [hasExistingDecision, setHasExistingDecision] = useState(false);
@@ -14,7 +14,7 @@ const CharlesPresentation = ({ onStartOrientation, onViewExistingDecision }) => 
             if (storedUserName) {
                 const user = JSON.parse(storedUserName);
                 try {
-                    const response = await axios.get(`http://localhost:5001/api/history/session/${user.id}`);
+                    const response = await api.get(`/history/session/${user.id}`);
                     if (response.data.length > 0) {
                         setHasExistingDecision(true);
                     }
