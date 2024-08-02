@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { api } from './api';
 
 const KKIA_PAY = import.meta.env.VITE_KKIA_PAY_KEY;
+console.log(KKIA_PAY)
 
 const CoachesList = () => {
     const navigate = useNavigate();
@@ -45,40 +46,30 @@ const CoachesList = () => {
     };
 
     const handlePayment = async () => {
-        // openKkiapayWidget({
-        //     amount: selectedCoach.prix,
-        //     position: "center",
-        //     callback: "",
-        //     data: "",
-        //     theme: "orange",
-        //     key: KKIA_PAY
-        // });
+        openKkiapayWidget({
+            amount: selectedCoach.price,
+            position: "center",
+            callback: "",
+            data: "",
+            theme: "orange",
+            key: KKIA_PAY
+        });
 
-        // addSuccessListener(async (response) => {
-        //     console.log({ response });
-        //     setPaymentSuccess(true);
-        //     setTimeout(() => {
-        //         setPaymentSuccess(false);
-        //         setShowModal(false);
-        //         navigate('/');
-        //     }, 3000);
-        // });
+        addSuccessListener(async (response) => {
+            console.log(response)
+            await api.post('/appointments', {
+                user_id: userInfo.id,
+                coach_id: selectedCoach.id,
+                date_time: null
+            })
+            setPaymentSuccess(true);
 
-
-
-        await api.post('/appointments', {
-            user_id: userInfo.id,
-            coach_id: selectedCoach.id,
-            date_time: null
-        })
-
-        setPaymentSuccess(true);
-
-        setTimeout(() => {
-            setPaymentSuccess(false);
-            setShowModal(false);
-            navigate('/');
-        }, 2000);
+            setTimeout(() => {
+                setPaymentSuccess(false);
+                setShowModal(false);
+                navigate('/');
+            }, 2000);
+        });
     };
 
     console.log({ selectedCoach })
