@@ -1,3 +1,4 @@
+import axios from 'axios';
 const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
 
 export async function JSONOpenAI(messages) {
@@ -169,3 +170,7 @@ export async function takeFinalDecision(initialQuestion, decisionPath, userName)
 
     return await JSONOpenAI(messages);
 }
+
+export const api = axios.create({
+    baseURL: 'http://localhost:5001/api', // Ajustez selon votre configuration
+});

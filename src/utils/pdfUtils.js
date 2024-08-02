@@ -1,6 +1,6 @@
 import { jsPDF } from "jspdf";
 
-export function genererPDF(reponses, decisionFinale, nom) {
+export function genererPDF(decisionFinale, nom) {
     const doc = new jsPDF();
 
     const addWrappedText = (text, x, y, maxWidth, lineHeight) => {
