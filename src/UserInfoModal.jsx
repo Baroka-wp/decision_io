@@ -23,16 +23,12 @@ const UserInfoModal = ({ onSubmit, onExistingDecision }) => {
 
         setIsLoading(true);
 
-
-
         try {
             const checkUserResponse = await api.get(`/users/${phoneNumber}`);
 
             if (checkUserResponse.data) {
                 const historyResponse = await api.get(`/history/session/${checkUserResponse.data.id}`);
                 const finalDecision = historyResponse.data.find(entry => entry.final_decision);
-
-                console.log(finalDecision)
 
                 if (finalDecision) {
                     onExistingDecision(finalDecision.final_decision);
