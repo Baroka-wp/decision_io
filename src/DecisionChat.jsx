@@ -38,7 +38,7 @@ export default function DecisionChat({ domaine }) {
     }, []);
 
     useEffect(() => {
-        const storedName = localStorage.getItem('userName');
+        const storedName = localStorage.getItem('user_Name');
         if (storedName) {
             setUserName(storedName);
             setShowNameModal(false);
