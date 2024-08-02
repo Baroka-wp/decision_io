@@ -240,7 +240,7 @@ const Domaines = () => {
                                 onReponse={handleReponse}
                             />
                         )}
-                        {etape > 0 && etape < etapes.length && (
+                        {/* {etape > 0 && etape < etapes.length && (
                             <button
                                 onClick={() => setEtape(etape - 1)}
                                 className="mt-4 flex items-center text-fuschia-600"
@@ -248,7 +248,7 @@ const Domaines = () => {
                                 <ChevronLeft size={20} />
                                 Question précédente
                             </button>
-                        )}
+                        )} */}
                     </div>
                 )}
             </>
