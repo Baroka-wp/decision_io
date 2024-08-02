@@ -44,7 +44,7 @@ const Domaines = () => {
 
     const handleUserInfoSubmit = (info) => {
         if (info.name) {
-            localStorage.setItem('userName', JSON.stringify(info));
+            localStorage.setItem('user_Name', JSON.stringify(info));
             setUserInfo({ id: info.id, name: info.name, phoneNumber: info.phoneNumber });
         } else {
             console.error('Nom d\'utilisateur non trouvé dans les informations soumises');
@@ -60,7 +60,7 @@ const Domaines = () => {
     };
 
     const handleStartOrientation = () => {
-        const storedUserName = localStorage.getItem('userName');
+        const storedUserName = localStorage.getItem('user_Name');
         if (storedUserName) {
             try {
                 const user = JSON.parse(storedUserName);
@@ -77,7 +77,7 @@ const Domaines = () => {
     };
 
     const handleViewExistingDecision = () => {
-        const storedUserName = localStorage.getItem('userName');
+        const storedUserName = localStorage.getItem('user_Name');
         if (storedUserName) {
             try {
                 const user = JSON.parse(storedUserName);

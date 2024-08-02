@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PhoneInput from 'react-phone-number-input';
 import { api } from './api';
 import 'react-phone-number-input/style.css';
+import { ConstructionIcon } from 'lucide-react';
 
 const UserInfoModal = ({ onSubmit, onExistingDecision }) => {
     const [name, setName] = useState('');
@@ -18,7 +19,11 @@ const UserInfoModal = ({ onSubmit, onExistingDecision }) => {
             return;
         }
 
+        console.log("login")
+
         setIsLoading(true);
+
+
 
         try {
             const checkUserResponse = await api.get(`/users/${phoneNumber}`);
@@ -26,6 +31,8 @@ const UserInfoModal = ({ onSubmit, onExistingDecision }) => {
             if (checkUserResponse.data) {
                 const historyResponse = await api.get(`/history/session/${checkUserResponse.data.id}`);
                 const finalDecision = historyResponse.data.find(entry => entry.final_decision);
+
+                console.log(finalDecision)
 
                 if (finalDecision) {
                     onExistingDecision(finalDecision.final_decision);
