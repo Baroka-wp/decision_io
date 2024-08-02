@@ -79,21 +79,26 @@ const Domaines = () => {
     const handleViewExistingDecision = () => {
         const storedUserName = localStorage.getItem('userName');
         if (storedUserName) {
-            const user = JSON.parse(storedUserName);
-            setUserInfo({ id: user.id, name: user.name, phoneNumber: user.phoneNumber });
-            api.get(`/history/session/${user.id}`)
-                .then(response => {
-                    if (response.data) {
-                        setHasFinalDecision(true)
-                        setDecisionFinale(JSON.parse(response.data[0]?.decision));
-                        setEtape(10);
-                    } else {
-                        setEtape(0);
-                    }
-                })
-                .catch(error => {
-                    console.error(error);
-                });
+            try {
+                const user = JSON.parse(storedUserName);
+                setUserInfo({ id: user.id, name: user.name, phoneNumber: user.phoneNumber });
+                api.get(`/history/session/${user.id}`)
+                    .then(response => {
+                        if (response.data) {
+                            setHasFinalDecision(true)
+                            setDecisionFinale(JSON.parse(response.data[0]?.decision));
+                            setEtape(10);
+                        } else {
+                            setEtape(0);
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+
+            } catch (err) {
+                setShowUserInfoModal(true);
+            }
         } else {
             setShowUserInfoModal(true);
         }
