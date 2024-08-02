@@ -24,7 +24,7 @@ const CoachesList = () => {
         }
 
         const fecthUserData = () => {
-            const storedUserName = localStorage.getItem('userName');
+            const storedUserName = localStorage.getItem('user_Name');
             if (storedUserName) {
                 const user = JSON.parse(storedUserName);
                 setUserInfo({ id: user.id, name: user.name, phoneNumber: user.phoneNumber });
