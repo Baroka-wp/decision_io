@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import PhoneInput from 'react-phone-number-input';
 import { api } from './api';
 import 'react-phone-number-input/style.css';
-import { ConstructionIcon } from 'lucide-react';
 
 const UserInfoModal = ({ onSubmit, onExistingDecision }) => {
     const [name, setName] = useState('');
