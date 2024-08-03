@@ -17,7 +17,7 @@ const DecisionFinaleComponent = ({ decision, userInfo, onback }) => {
                     Retour à l'accueil
                 </button>
             </div>
-            <h2 className="text-3xl font-bold mb-6 text-center text-fuschia-600">Ton orientation professionnelle, {userInfo.nom}</h2>
+            <h2 className="text-3xl font-bold mb-6 text-center text-fuschia-600">Ton orientation professionnelle, {userInfo.name}</h2>
             <div className="text-lg mb-8 text-center">
                 <p className="italic">{decision.introduction}</p>
             </div>
