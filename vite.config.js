@@ -10,5 +10,10 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: ['pdfmake', 'pdfmake/build/vfs_fonts']
+  },
+  resolve: {
+    alias: {
+      './vfs_fonts.js': 'pdfmake/build/vfs_fonts'
+    }
   }
 })
