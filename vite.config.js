@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [react()],
   build: {
     commonjsOptions: {
-      include: [/pdfmake/, /node_modules/]
+      include: [/node_modules/]
     }
   },
   optimizeDeps: {
