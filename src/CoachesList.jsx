@@ -5,7 +5,6 @@ import { api } from './api';
 import CoachCard from './components/CoachCard';
 
 const KKIA_PAY = import.meta.env.VITE_KKIA_PAY_KEY;
-console.log(KKIA_PAY)
 
 const CoachesList = () => {
     const navigate = useNavigate();
