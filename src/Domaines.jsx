@@ -9,14 +9,14 @@ import { api } from './api';
 
 const Domaines = () => {
     const [etape, setEtape] = useState(-1);
+    const [questions, setQuestions] = useState([]);
     const [reponses, setReponses] = useState([]);
-    const [questionActuelle, setQuestionActuelle] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [showUserInfoModal, setShowUserInfoModal] = useState(false);
     const [userInfo, setUserInfo] = useState(null);
     const [analysisProgress, setAnalysisProgress] = useState(0);
     const [decisionFinale, setDecisionFinale] = useState(null);
-    const [hasFinalDecision, setHasFinalDecision] = useState(false)
+    const [hasFinalDecision, setHasFinalDecision] = useState(false);
 
     const etapes = [
         "Passions et intérêts",
@@ -29,17 +29,24 @@ const Domaines = () => {
         "Vision du futur",
         "Impact souhaité"
     ];
+
     useEffect(() => {
-        if (userInfo && etape === 0) {
+        if (userInfo && etape === 0 && questions.length === 0) {
             initierProcessus();
         }
-    }, [userInfo, etape]);
+    }, [userInfo, etape, questions.length]);
 
     const initierProcessus = async () => {
         setIsLoading(true);
-        const questionInitiale = await generateDecisionNode(1, "", {});
-        setQuestionActuelle(questionInitiale);
-        setIsLoading(false);
+        try {
+            const questionInitiale = await generateDecisionNode(1, "", {});
+            setQuestions([questionInitiale]);
+            setEtape(0);
+        } catch (error) {
+            console.error("Erreur lors de l'initialisation du processus:", error);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleUserInfoSubmit = (info) => {
@@ -55,7 +62,7 @@ const Domaines = () => {
     };
 
     const handleExistingDecision = (decision) => {
-        setHasFinalDecision(true)
+        setHasFinalDecision(true);
         setDecisionFinale(decision);
     };
 
@@ -66,8 +73,6 @@ const Domaines = () => {
                 const user = JSON.parse(storedUserName);
                 setUserInfo({ id: user.id, name: user.name, phoneNumber: user.phoneNumber });
                 setEtape(0);
-                initierProcessus();
-
             } catch (err) {
                 setShowUserInfoModal(true);
             }
@@ -85,7 +90,7 @@ const Domaines = () => {
                 api.get(`/history/session/${user.id}`)
                     .then(response => {
                         if (response.data) {
-                            setHasFinalDecision(true)
+                            setHasFinalDecision(true);
                             setDecisionFinale(JSON.parse(response.data[0]?.decision));
                             setEtape(10);
                         } else {
@@ -95,7 +100,6 @@ const Domaines = () => {
                     .catch(error => {
                         console.error(error);
                     });
-
             } catch (err) {
                 setShowUserInfoModal(true);
             }
@@ -105,20 +109,31 @@ const Domaines = () => {
     };
 
     const handleReponse = async (reponse) => {
-        const nouvellesReponses = [...reponses, { question: questionActuelle.question, answer: reponse }];
+        const nouvellesReponses = [...reponses.slice(0, etape), reponse];
         setReponses(nouvellesReponses);
 
         if (etape < etapes.length - 1) {
             setIsLoading(true);
-            const prochainNode = await generateDecisionNode(
-                etape + 2,
-                JSON.stringify(nouvellesReponses),
-                {}
-            );
-            setQuestionActuelle(prochainNode);
-            setEtape(etape + 1);
+            if (etape + 1 < questions.length) {
+                // La question suivante est déjà générée
+                setEtape(etape + 1);
+            } else {
+                // Générer la prochaine question
+                try {
+                    const prochainNode = await generateDecisionNode(
+                        etape + 2,
+                        JSON.stringify(nouvellesReponses.map((r, i) => ({ question: questions[i].question, answer: r }))),
+                        {}
+                    );
+                    setQuestions([...questions, prochainNode]);
+                    setEtape(etape + 1);
+                } catch (error) {
+                    console.error("Erreur lors de la génération de la prochaine question:", error);
+                }
+            }
             setIsLoading(false);
         } else {
+            // Logique pour la décision finale (inchangée)
             setIsLoading(true);
             let progress = 0;
             const intervalId = setInterval(() => {
@@ -131,21 +146,26 @@ const Domaines = () => {
 
             try {
                 // Stocker l'historique de la discussion
+                const sessionData = questions.map((q, i) => ({
+                    question: q.question,
+                    answer: nouvellesReponses[i]
+                }));
+
                 if (hasFinalDecision) {
                     await api.put('/history', {
                         user_id: userInfo.id,
-                        session_data: JSON.stringify(nouvellesReponses)
+                        session_data: JSON.stringify(sessionData)
                     });
                 } else {
                     await api.post('/history', {
                         user_id: userInfo.id,
-                        session_data: JSON.stringify(nouvellesReponses)
+                        session_data: JSON.stringify(sessionData)
                     });
                 }
 
                 const decision = await takeFinalDecision(
                     "Orientation professionnelle pour un bachelier au Bénin",
-                    nouvellesReponses,
+                    sessionData,
                     userInfo.name
                 );
 
@@ -157,7 +177,7 @@ const Domaines = () => {
 
                 clearInterval(intervalId);
                 setAnalysisProgress(100);
-                setHasFinalDecision(true)
+                setHasFinalDecision(true);
                 setDecisionFinale(JSON.parse(decision));
             } catch (error) {
                 console.error('Erreur lors de la finalisation de la décision:', error);
@@ -168,12 +188,14 @@ const Domaines = () => {
     };
 
     const handleBackclick = () => {
-        setHasFinalDecision(true)
-        setDecisionFinale(null)
-        setEtape(-1)
-    }
+        setHasFinalDecision(false);
+        setDecisionFinale(null);
+        setEtape(-1);
+        setQuestions([]);
+        setReponses([]);
+    };
 
-    const QuestionComponent = ({ question, onReponse }) => (
+    const QuestionComponent = ({ question, onReponse, currentAnswer }) => (
         <div className="flex flex-col items-center justify-center">
             <h2 className="text-2xl font-bold mb-4 text-center">{etapes[etape]}</h2>
             <h3 className="text-xl mb-4 text-center">{question.question}</h3>
@@ -182,7 +204,10 @@ const Domaines = () => {
                     <button
                         key={index}
                         onClick={() => onReponse(option)}
-                        className="flex items-center justify-center p-4 bg-gradient-to-r from-fuschia-500 to-violet-500 text-white rounded-lg transition-all hover:scale-105"
+                        className={`flex items-center justify-center p-4 ${currentAnswer === option
+                                ? 'bg-violet-600 text-white'
+                                : 'bg-gradient-to-r from-fuschia-500 to-violet-500 text-white'
+                            } rounded-lg transition-all hover:scale-105`}
                     >
                         {option}
                     </button>
@@ -205,7 +230,6 @@ const Domaines = () => {
                     onStartOrientation={handleStartOrientation}
                     onViewExistingDecision={handleViewExistingDecision}
                 />
-
             )}
             {showUserInfoModal && (
                 <UserInfoModal
@@ -232,15 +256,14 @@ const Domaines = () => {
                         userInfo={userInfo}
                         onback={handleBackclick}
                     />
-                ) : etape >= 0 && (
+                ) : etape >= 0 && questions.length > 0 && (
                     <div className="flex flex-col justify-center items-center h-full">
-                        {questionActuelle && (
-                            <QuestionComponent
-                                question={questionActuelle}
-                                onReponse={handleReponse}
-                            />
-                        )}
-                        {/* {etape > 0 && etape < etapes.length && (
+                        <QuestionComponent
+                            question={questions[etape]}
+                            onReponse={handleReponse}
+                            currentAnswer={reponses[etape]}
+                        />
+                        {etape > 0 && (
                             <button
                                 onClick={() => setEtape(etape - 1)}
                                 className="mt-4 flex items-center text-fuschia-600"
@@ -248,7 +271,7 @@ const Domaines = () => {
                                 <ChevronLeft size={20} />
                                 Question précédente
                             </button>
-                        )} */}
+                        )}
                     </div>
                 )}
             </>
