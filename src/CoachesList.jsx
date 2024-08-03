@@ -107,10 +107,10 @@ const CoachesList = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {coachesList.map(coach => (
                     <div key={coach.id} className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col h-full">
-                        <div className="h-64 bg-gray-200">
+                        <div className="h-48 sm:h-64 bg-gray-200">
                             <img src={coach.photo_url} alt={coach.name} className="w-full h-full object-cover" />
                         </div>
-                        <div className="p-4 flex-grow flex flex-col">
+                        <div className="p-4 flex flex-col flex-grow">
                             <h2 className="text-xl font-semibold mb-2 text-violet-600">{coach.name}</h2>
                             <p className="text-gray-600 text-sm mb-1">{coach.diplomes}</p>
                             <p className="text-gray-600 text-sm mb-2 line-clamp-2">{coach.experience}</p>
@@ -121,14 +121,14 @@ const CoachesList = () => {
                                     className="w-full bg-gradient-to-r from-fuschia-500 to-violet-500 text-white font-bold py-2 px-4 rounded hover:from-fuschia-600 hover:to-violet-600 flex items-center justify-center"
                                 >
                                     <Calendar size={20} className="mr-2" />
-                                    Demande de rendez-vous
+                                    <span className="whitespace-nowrap overflow-hidden text-ellipsis">Demande de rendez-vous</span>
                                 </button>
                                 <button
                                     onClick={() => handleShowDetails(coach)}
                                     className="w-full bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded hover:bg-gray-300 flex items-center justify-center"
                                 >
                                     <Info size={20} className="mr-2" />
-                                    Plus d'infos
+                                    <span className="whitespace-nowrap overflow-hidden text-ellipsis">Plus d'infos</span>
                                 </button>
                             </div>
                         </div>
