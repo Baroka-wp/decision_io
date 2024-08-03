@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Calendar, X, CreditCard, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { api } from './api';
+import UserInfoModal from './UserInfoModal';
 import CoachCard from './components/CoachCard';
 
 const KKIA_PAY = import.meta.env.VITE_KKIA_PAY_KEY;
@@ -23,7 +24,11 @@ const CoachesList = () => {
             setCoachList(response.data)
             setIsLoading(false)
         }
+        fecthCoaches();
 
+    }, [])
+
+    const handleAppointmentRequest = (coach) => {
         const fecthUserData = () => {
             const storedUserName = localStorage.getItem('user_Name');
             if (storedUserName) {
@@ -33,12 +38,8 @@ const CoachesList = () => {
                 navigate('/');
             }
         }
-        fecthCoaches();
         fecthUserData();
 
-    }, [])
-
-    const handleAppointmentRequest = (coach) => {
         setShowDetailsModal(false)
         setSelectedCoach(coach);
         setShowModal(true);

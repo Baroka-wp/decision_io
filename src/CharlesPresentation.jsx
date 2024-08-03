@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Play, RefreshCw, FileText, PhoneCall } from 'lucide-react';
 import { api } from './api';
+import UserInfoModal from './UserInfoModal';
 
 const CharlesPresentation = ({ onStartOrientation, onViewExistingDecision }) => {
     const [hasExistingDecision, setHasExistingDecision] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [showUserInfoModal, setShowUserInfoModal] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -29,7 +31,12 @@ const CharlesPresentation = ({ onStartOrientation, onViewExistingDecision }) => 
     }, []);
 
     const handleStartNewOrientation = () => {
-        onStartOrientation();
+        const storedUserName = localStorage.getItem('user_Name');
+        if (storedUserName) {
+            onStartOrientation();
+        } else {
+            setShowUserInfoModal(true);
+        }
     };
 
     const handleViewExistingDecision = () => {
@@ -37,6 +44,17 @@ const CharlesPresentation = ({ onStartOrientation, onViewExistingDecision }) => 
     };
 
     const handleTalkToCoach = () => {
+        const storedUserName = localStorage.getItem('user_Name');
+        if (storedUserName) {
+            navigate('/coaches');
+        } else {
+            setShowUserInfoModal(true);
+        }
+    };
+
+    const handleUserInfoSubmit = (info) => {
+        localStorage.setItem('user_Name', JSON.stringify(info));
+        setShowUserInfoModal(false);
         navigate('/coaches');
     };
 
@@ -113,6 +131,12 @@ const CharlesPresentation = ({ onStartOrientation, onViewExistingDecision }) => 
                             <FileText size={20} className="mr-2" />
                             Consulter ma fiche existante
                         </button>
+                    )}
+                    {showUserInfoModal && (
+                        <UserInfoModal
+                            onSubmit={handleUserInfoSubmit}
+                            onExistingDecision={() => { }}
+                        />
                     )}
                     <button
                         className="w-full bg-violet-500 text-white font-bold py-3 px-4 rounded-xl hover:bg-violet-600 focus:outline-none focus:ring-2 focus:ring-violet-200 focus:ring-opacity-50 transition duration-200 ease-in-out transform hover:scale-105 flex items-center justify-center"
