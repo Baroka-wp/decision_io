@@ -207,10 +207,10 @@ const Domaines = () => {
     };
 
     const QuestionComponent = ({ question, onReponse, currentAnswer }) => (
-        <div className="flex flex-col items-center justify-center w-full">
-            <h2 className="text-2xl font-bold mb-4 text-center">{etapes[etape]}</h2>
-            <h3 className="text-xl mb-4 text-center">{question.question}</h3>
-            <div className="grid grid-cols-2 gap-4 w-full max-w-4xl">
+        <div className="flex flex-col items-center justify-center w-full px-4 md:px-0">
+            <h2 className="text-xl md:text-2xl font-bold mb-4 text-center text-fuschia-600">{etapes[etape]}</h2>
+            <h3 className="text-lg md:text-xl mb-6 text-center">{question.question}</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-md md:max-w-2xl">
                 {question.options.map((option, index) => (
                     <button
                         key={index}
@@ -218,7 +218,7 @@ const Domaines = () => {
                         className={`flex items-center justify-center p-4 ${currentAnswer === option
                             ? 'bg-violet-600 text-white'
                             : 'bg-gradient-to-r from-fuschia-500 to-violet-500 text-white'
-                            } rounded-lg transition-all hover:scale-105`}
+                            } rounded-lg transition-all hover:scale-105 text-sm md:text-base`}
                     >
                         {option}
                     </button>
@@ -235,7 +235,7 @@ const Domaines = () => {
     );
 
     return (
-        <div className="flex flex-col h-screen">
+        <div className="flex flex-col min-h-screen bg-gradient-to-r from-fuschia-100 to-violet-100">
             {etape === -1 && (
                 <CharlesPresentation
                     onStartOrientation={handleStartOrientation}
@@ -251,21 +251,21 @@ const Domaines = () => {
             {etape >= 0 && (
                 <button
                     onClick={handleReturnHome}
-                    className="absolute top-4 left-4 flex items-center text-fuschia-600 hover:text-fuschia-700"
+                    className="absolute top-4 left-4 flex items-center text-fuschia-600 hover:text-fuschia-700 z-10"
                 >
                     <Home size={20} className="mr-2" />
-                    Accueil
+                    <span className="hidden md:inline">Accueil</span>
                 </button>
             )}
 
-            <>
+            <div className="flex-grow flex flex-col justify-center items-center p-4 md:p-8">
                 {isLoading ? (
-                    <div className="flex flex-col justify-center items-center h-full">
+                    <div className="flex flex-col justify-center items-center">
                         {etape < etapes.length ? (
                             <Loader />
                         ) : (
                             <>
-                                <h2 className="text-2xl font-bold mb-4">Analyse en cours...</h2>
+                                <h2 className="text-xl md:text-2xl font-bold mb-4">Analyse en cours...</h2>
                                 <ProgressBar progress={analysisProgress} />
                             </>
                         )}
@@ -277,7 +277,7 @@ const Domaines = () => {
                         onback={handleBackclick}
                     />
                 ) : etape >= 0 && questions.length > 0 && (
-                    <div className="flex flex-col justify-center items-center h-full">
+                    <div className="w-full max-w-4xl">
                         <QuestionComponent
                             question={questions[etape]}
                             onReponse={handleReponse}
@@ -286,15 +286,15 @@ const Domaines = () => {
                         {etape > 0 && (
                             <button
                                 onClick={() => setEtape(etape - 1)}
-                                className="mt-4 flex items-center text-fuschia-600"
+                                className="mt-6 flex items-center text-fuschia-600 mx-auto"
                             >
-                                <ChevronLeft size={20} />
-                                Question précédente
+                                <ChevronLeft size={20} className="mr-1" />
+                                <span className="text-sm md:text-base">Question précédente</span>
                             </button>
                         )}
                     </div>
                 )}
-            </>
+            </div>
         </div>
     );
 };
