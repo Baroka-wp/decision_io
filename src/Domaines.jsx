@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, PhoneCall, Download } from 'lucide-react';
+import { ChevronLeft, Home } from 'lucide-react';
 import { generateDecisionNode, takeFinalDecision } from './api';
 import UserInfoModal from './UserInfoModal';
 import ProgressBar from './ProgressBar';
@@ -187,6 +187,17 @@ const Domaines = () => {
         }
     };
 
+    const handleReturnHome = () => {
+        // Réinitialiser tous les états pertinents
+        setEtape(-1);
+        setQuestions([]);
+        setReponses([]);
+        setDecisionFinale(null);
+        setHasFinalDecision(false);
+        setAnalysisProgress(0);
+        // Ne pas réinitialiser userInfo pour garder l'utilisateur connecté
+    };
+
     const handleBackclick = () => {
         setHasFinalDecision(false);
         setDecisionFinale(null);
@@ -196,7 +207,7 @@ const Domaines = () => {
     };
 
     const QuestionComponent = ({ question, onReponse, currentAnswer }) => (
-        <div className="flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center w-full">
             <h2 className="text-2xl font-bold mb-4 text-center">{etapes[etape]}</h2>
             <h3 className="text-xl mb-4 text-center">{question.question}</h3>
             <div className="grid grid-cols-2 gap-4 w-full max-w-4xl">
@@ -205,8 +216,8 @@ const Domaines = () => {
                         key={index}
                         onClick={() => onReponse(option)}
                         className={`flex items-center justify-center p-4 ${currentAnswer === option
-                                ? 'bg-violet-600 text-white'
-                                : 'bg-gradient-to-r from-fuschia-500 to-violet-500 text-white'
+                            ? 'bg-violet-600 text-white'
+                            : 'bg-gradient-to-r from-fuschia-500 to-violet-500 text-white'
                             } rounded-lg transition-all hover:scale-105`}
                     >
                         {option}
@@ -224,7 +235,7 @@ const Domaines = () => {
     );
 
     return (
-        <div className="flex flex-col h-screen p-4">
+        <div className="flex flex-col h-screen">
             {etape === -1 && (
                 <CharlesPresentation
                     onStartOrientation={handleStartOrientation}
@@ -236,6 +247,15 @@ const Domaines = () => {
                     onSubmit={handleUserInfoSubmit}
                     onExistingDecision={handleExistingDecision}
                 />
+            )}
+            {etape >= 0 && (
+                <button
+                    onClick={handleReturnHome}
+                    className="absolute top-4 left-4 flex items-center text-fuschia-600 hover:text-fuschia-700"
+                >
+                    <Home size={20} className="mr-2" />
+                    Accueil
+                </button>
             )}
 
             <>
