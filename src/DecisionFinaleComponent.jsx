@@ -9,13 +9,13 @@ const DecisionFinaleComponent = ({ decision, userInfo, onback }) => {
     return (
         <div className="flex flex-col items-center justify-center max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg">
             <div className="w-full mb-6">
-                <button
+                {/* <button
                     onClick={onback}
                     className="flex items-center text-fuschia-600 hover:text-fuschia-700 transition-colors duration-200"
                 >
                     <ChevronLeft size={24} className="mr-2" />
                     Retour à l'accueil
-                </button>
+                </button> */}
             </div>
             <h2 className="text-3xl font-bold mb-6 text-center text-fuschia-600">Ton orientation professionnelle, {userInfo.name}</h2>
             <div className="text-lg mb-8 text-center">
