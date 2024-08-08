@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, Home } from 'lucide-react';
-import { generateDecisionNode, takeFinalDecision } from './api';
+import { generateStartupDecisionNode, takeStartupFinalDecision } from './api';
 import UserInfoModal from './UserInfoModal';
-import CharlesPresentation from './CharlesPresentation';
+import StartUppPresentation from './StartUppPresentation';
 import DecisionFinaleComponent from './DecisionFinaleComponent';
 import { api } from './api';
 import ProgressBar from './components/ProgressBar';
@@ -20,15 +20,15 @@ const Domaines = () => {
     const [progression, setProgression] = useState(0);
 
     const etapes = [
-        "Passions et intérêts",
-        "Compétences intellectuelles",
-        "Préférences de travail",
-        "Rêves et aspirations",
-        "Expériences pratiques",
-        "Valeurs personnelles",
-        "Défis et obstacles",
-        "Vision du futur",
-        "Impact souhaité"
+        "Motivations entrepreneuriales",
+        "Compétences clés",
+        "Expérience professionnelle",
+        "Idée de startup",
+        "Connaissances du marché",
+        "Réseau et ressources",
+        "Gestion du risque",
+        "Vision à long terme",
+        "Impact social"
     ];
 
     useEffect(() => {
@@ -40,7 +40,7 @@ const Domaines = () => {
     const initierProcessus = async () => {
         setIsLoading(true);
         try {
-            const questionInitiale = await generateDecisionNode(1, "", {});
+            const questionInitiale = await generateStartupDecisionNode(1, "", {});
             setQuestions([questionInitiale]);
             setEtape(0);
         } catch (error) {
@@ -121,7 +121,7 @@ const Domaines = () => {
                 setEtape(etape + 1);
             } else {
                 try {
-                    const prochainNode = await generateDecisionNode(
+                    const prochainNode = await generateStartupDecisionNode(
                         etape + 2,
                         JSON.stringify(nouvellesReponses.map((r, i) => ({ question: questions[i].question, answer: r }))),
                         {}
@@ -162,7 +162,7 @@ const Domaines = () => {
                     });
                 }
 
-                const decision = await takeFinalDecision(
+                const decision = await takeStartupFinalDecision(
                     "Orientation professionnelle pour un bachelier au Bénin",
                     sessionData,
                     userInfo.name
@@ -177,7 +177,7 @@ const Domaines = () => {
                 setAnalysisProgress(100);
                 setHasFinalDecision(true);
                 setDecisionFinale(JSON.parse(decision));
-                setProgression(100);
+                setProgression(0);
             } catch (error) {
                 console.error('Erreur lors de la finalisation de la décision:', error);
             } finally {
@@ -232,9 +232,9 @@ const Domaines = () => {
     );
 
     return (
-        <div className="flex flex-col min-h-screen bg-gradient-to-r from-fuschia-100 to-violet-100">
+        <div className="flex flex-col min-h-screen bg-gradient-to-r from-yellow-100 to-violet-100">
             {etape === -1 && (
-                <CharlesPresentation
+                <StartUppPresentation
                     onStartOrientation={handleStartOrientation}
                     onViewExistingDecision={handleViewExistingDecision}
                 />
