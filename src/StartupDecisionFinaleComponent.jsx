@@ -1,16 +1,14 @@
 import React from 'react';
-import { genererPDF } from './utils/pdfUtils';
+import { genererPDFStartup } from './utils/pdfUtils';
 import { ChevronLeft, PhoneCall, Download } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-const DecisionFinaleComponent = ({ decision, userInfo, onback }) => {
+const StartupDecisionFinaleComponent = ({ decision, userInfo }) => {
     const navigate = useNavigate();
 
     return (
         <div className="flex flex-col items-center justify-center max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-            <div className="w-full mb-6">
-            </div>
-            <h2 className="text-3xl font-bold mb-6 text-center text-fuschia-600">Ton orientation professionnelle, {userInfo.name}</h2>
+            <h2 className="text-3xl font-bold mb-6 text-center text-yellow-600">Ton profil entrepreneurial, {userInfo.name}</h2>
             <div className="text-lg mb-8 text-center">
                 <p className="italic">{decision.introduction}</p>
             </div>
@@ -83,22 +81,22 @@ const DecisionFinaleComponent = ({ decision, userInfo, onback }) => {
 
             <div className="flex justify-center space-x-4">
                 <button
-                    onClick={() => navigate('/coaches')}
-                    className="flex items-center justify-center px-6 py-3 bg-fuschia-500 text-white rounded-lg transition-all hover:bg-fuschia-600"
+                    onClick={() => navigate('/startup-coaches')}
+                    className="flex items-center justify-center px-6 py-3 bg-yellow-500 text-white rounded-lg transition-all hover:bg-yellow-600"
                 >
                     <PhoneCall size={20} className="mr-2" />
-                    Parler à un coach
+                    Parler à un coach startup
                 </button>
                 <button
-                    onClick={() => genererPDF(decision, userInfo.name)}
+                    onClick={() => genererPDFStartup(decision, userInfo.name)}
                     className="flex items-center justify-center px-6 py-3 bg-violet-500 text-white rounded-lg transition-all hover:bg-violet-600"
                 >
                     <Download size={20} className="mr-2" />
-                    Télécharger ta fiche
+                    Télécharger ton profil entrepreneur
                 </button>
             </div>
         </div>
     )
 };
 
-export default DecisionFinaleComponent
+export default StartupDecisionFinaleComponent
