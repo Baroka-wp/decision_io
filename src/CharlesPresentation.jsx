@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Play, RefreshCw, FileText, PhoneCall, User } from 'lucide-react';
+import { 
+    Play, RefreshCw, FileText, PhoneCall, User, 
+    Check, Star, MessageCircle, Briefcase, 
+    Mail, MapPin, Linkedin, Twitter, Instagram 
+} from 'lucide-react';
 import { api } from './api';
 import UserInfoModal from './UserInfoModal';
-import anime from './assets/anime.jpeg'
+import Navbar from './components/Navbar';
 
 const CharlesPresentation = ({ onStartOrientation, onViewExistingDecision }) => {
     const [hasExistingDecision, setHasExistingDecision] = useState(false);
@@ -68,85 +72,202 @@ const CharlesPresentation = ({ onStartOrientation, onViewExistingDecision }) => 
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-r from-fuschia-100 to-violet-100 p-4 md:p-8 flex flex-col">
-            <div className="flex-grow flex flex-col max-w-7xl mx-auto w-full">
-                <header className="flex justify-between items-center mb-8">
-                    <h1 className="text-3xl font-bold text-fuschia-600">Décision</h1>
-                    <nav className="hidden md:flex space-x-4">
-                        <a href="#" className="text-gray-600 hover:text-fuschia-600">À propos</a>
-                        <a href="#" className="text-gray-600 hover:text-fuschia-600">Services</a>
-                        <a href="#" className="text-gray-600 hover:text-fuschia-600">Contact</a>
-                    </nav>
-                    <User size={32} className="text-fuschia-600" />
-                </header>
+        <div className="bg-gradient-to-br from-[#F5F5FA] to-[#FFFFFF]">
+            {/* Navbar */}
+            <Navbar />
+            {/* Hero Section */}
+            <header id="home" className="pt-24 pb-16 px-4 max-w-6xl mx-auto flex flex-col items-center justify-center text-center">
+                <div className="max-w-3xl space-y-6">
+                    <h1 className="text-4xl md:text-5xl font-bold text-[#2C3E50] leading-tight">
+                        Trouve ta voie professionnelle
+                    </h1>
+                    <p className="text-lg text-[#4A4A4A] leading-relaxed">
+                        Découvre le chemin professionnel qui te correspond le mieux grâce à notre orientation personnalisée.
+                    </p>
+                    <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 justify-center">
+                        <button 
+                            onClick={handleStartNewOrientation}
+                            className="bg-[#6A5ACD] text-white px-6 py-3 rounded-full hover:bg-[#5A4ACD] transition flex items-center justify-center"
+                        >
+                            <Play className="mr-2" /> Commencer mon orientation
+                        </button>
+                        {hasExistingDecision && (
+                            <button 
+                                onClick={handleViewExistingDecision}
+                                className="border-2 border-[#6A5ACD] text-[#6A5ACD] px-6 py-3 rounded-full hover:bg-[#6A5ACD]/10 transition flex items-center justify-center"
+                            >
+                                <FileText className="mr-2" /> Ma fiche existante
+                            </button>
+                        )}
+                    </div>
+                </div>
+            </header>
 
-                <main className="flex-grow flex flex-col md:flex-row items-center justify-center">
-                    <div className="md:w-1/2 mb-8 md:mb-0 order-2 md:order-1">
-                        <h2 className="text-4xl md:text-5xl font-bold text-fuschia-600 mb-4 text-center md:text-left">Quelles études faire après le BAC ? </h2>
-                        <p className="text-lg text-gray-700 mb-6 text-center md:text-left">
-                            Découvre le chemin professionnel qui te correspond le mieux.
+            {/* Features Section */}
+            <section id="services" className="py-16 bg-[#F5F5FA]">
+                <div className="max-w-6xl mx-auto px-4">
+                    <h2 className="text-3xl font-bold text-center text-[#2C3E50] mb-12">
+                        Nos Services
+                    </h2>
+                    <div className="grid md:grid-cols-3 gap-8">
+                        {[
+                            {
+                                icon: <Briefcase className="text-[#6A5ACD]" size={48} />,
+                                title: "Orientation Personnalisée",
+                                description: "Une analyse approfondie pour découvrir votre voie professionnelle idéale."
+                            },
+                            {
+                                icon: <FileText className="text-[#6A5ACD]" size={48} />,
+                                title: "Rapport Détaillé",
+                                description: "Un document complet sur vos compétences et opportunités de carrière."
+                            },
+                            {
+                                icon: <MessageCircle className="text-[#6A5ACD]" size={48} />,
+                                title: "Coaching Individuel",
+                                description: "Des conseils personnalisés pour affiner votre parcours professionnel."
+                            }
+                        ].map((service, index) => (
+                            <div key={index} className="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition">
+                                <div className="mb-4">{service.icon}</div>
+                                <h3 className="text-xl font-semibold mb-2 text-[#2C3E50]">
+                                    {service.title}
+                                </h3>
+                                <p className="text-[#4A4A4A]">
+                                    {service.description}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Testimonials Section */}
+            <section id="testimonials" className="py-16">
+                <div className="max-w-6xl mx-auto px-4">
+                    <h2 className="text-3xl font-bold text-center text-[#2C3E50] mb-12">
+                        Témoignages
+                    </h2>
+                    <div className="grid md:grid-cols-3 gap-8">
+                        {[
+                            {
+                                name: "Marie Dupont",
+                                role: "Étudiante en Marketing",
+                                quote: "Grâce à Décision, j'ai trouvé ma voie et je me sens enfin en confiance pour mon avenir."
+                            },
+                            {
+                                name: "Jean Martin",
+                                role: "Lycéen",
+                                quote: "Le coaching m'a aidé à comprendre mes véritables passions et compétences."
+                            },
+                            {
+                                name: "Sophie Leroy",
+                                role: "Future Ingénieure",
+                                quote: "Un service incroyablement personnalisé qui m'a guidée vers ma carrière de rêve."
+                            }
+                        ].map((testimonial, index) => (
+                            <div key={index} className="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition">
+                                <div className="flex items-center mb-4">
+                                    <div>
+                                        <h3 className="font-semibold text-[#2C3E50]">{testimonial.name}</h3>
+                                        <p className="text-sm text-[#4A4A4A]">{testimonial.role}</p>
+                                    </div>
+                                </div>
+                                <p className="italic text-[#4A4A4A]">"{testimonial.quote}"</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Contact Section */}
+            <section id="contact" className="py-16 bg-[#F5F5FA]">
+                <div className="max-w-6xl mx-auto px-4">
+                    <div className="grid md:grid-cols-2 gap-12 items-center">
+                        <div>
+                            <h2 className="text-3xl font-bold text-[#2C3E50] mb-6">
+                                Contactez-nous
+                            </h2>
+                            <p className="text-[#4A4A4A] mb-8">
+                                Vous avez des questions ? N'hésitez pas à nous contacter. Nous sommes là pour vous aider.
+                            </p>
+                            <div className="space-y-4">
+                                <div className="flex items-center space-x-4">
+                                    <Mail className="text-[#6A5ACD]" />
+                                    <span>contact@decision.io</span>
+                                </div>
+                                <div className="flex items-center space-x-4">
+                                    <MapPin className="text-[#6A5ACD]" />
+                                    <span>Paris, France</span>
+                                </div>
+                            </div>
+                        </div>
+                        <form className="bg-white p-8 rounded-2xl shadow-md">
+                            <div className="mb-4">
+                                <label className="block text-[#2C3E50] mb-2">Nom</label>
+                                <input 
+                                    type="text" 
+                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6A5ACD]"
+                                    placeholder="Votre nom"
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-[#2C3E50] mb-2">Email</label>
+                                <input 
+                                    type="email" 
+                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6A5ACD]"
+                                    placeholder="Votre email"
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-[#2C3E50] mb-2">Message</label>
+                                <textarea 
+                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6A5ACD]"
+                                    rows="4"
+                                    placeholder="Votre message"
+                                ></textarea>
+                            </div>
+                            <button 
+                                type="submit" 
+                                className="w-full bg-[#6A5ACD] text-white py-3 rounded-full hover:bg-[#5A4ACD] transition"
+                            >
+                                Envoyer
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            {/* Footer */}
+            <footer className="bg-[#2C3E50] text-white py-12">
+                <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-8">
+                    <div>
+                        <h3 className="text-2xl font-bold mb-4">Décision</h3>
+                        <p className="text-[#A0A0A0]">
+                            Votre partenaire pour une orientation professionnelle réussie.
                         </p>
-                        <div className="flex flex-col items-center md:items-start space-y-4">
-                            <button
-                                onClick={handleStartNewOrientation}
-                                className="w-full md:w-auto bg-gradient-to-r from-fuschia-500 to-violet-500 text-white font-bold py-3 px-6 rounded-xl hover:from-fuschia-600 hover:to-violet-600 transition duration-200 ease-in-out transform hover:scale-105 flex items-center justify-center"
-                            >
-                                {hasExistingDecision ? (
-                                    <>
-                                        <RefreshCw size={20} className="mr-2" />
-                                        Générer une nouvelle fiche
-                                    </>
-                                ) : (
-                                    <>
-                                        <Play size={20} className="mr-2" />
-                                        Commencer l'aventure
-                                    </>
-                                )}
-                            </button>
-                            {hasExistingDecision && (
-                                <button
-                                    onClick={handleViewExistingDecision}
-                                    className="w-full md:w-auto bg-white text-fuschia-500 font-bold py-3 px-6 rounded-xl border-2 border-fuschia-500 hover:bg-fuschia-50 transition duration-200 ease-in-out transform hover:scale-105 flex items-center justify-center"
-                                >
-                                    <FileText size={20} className="mr-2" />
-                                    Consulter ma fiche existante
-                                </button>
-                            )}
-                            <button
-                                onClick={handleTalkToCoach}
-                                className="w-full md:w-auto bg-violet-500 text-white font-bold py-3 px-6 rounded-xl hover:bg-violet-600 transition duration-200 ease-in-out transform hover:scale-105 flex items-center justify-center"
-                            >
-                                <PhoneCall size={20} className="mr-2" />
-                                Parler à un coach
-                            </button>
+                    </div>
+                    <div>
+                        <h4 className="font-semibold mb-4">Liens Rapides</h4>
+                        <ul className="space-y-2">
+                            <li><a href="#home" className="hover:text-[#6A5ACD] transition">Accueil</a></li>
+                            <li><a href="#services" className="hover:text-[#6A5ACD] transition">Services</a></li>
+                            <li><a href="#testimonials" className="hover:text-[#6A5ACD] transition">Témoignages</a></li>
+                            <li><a href="#contact" className="hover:text-[#6A5ACD] transition">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 className="font-semibold mb-4">Suivez-nous</h4>
+                        <div className="flex space-x-4">
+                            <a href="#" className="hover:text-[#6A5ACD] transition"><Linkedin /></a>
+                            <a href="#" className="hover:text-[#6A5ACD] transition"><Twitter /></a>
+                            <a href="#" className="hover:text-[#6A5ACD] transition"><Instagram /></a>
                         </div>
                     </div>
-                    <div className="md:w-1/2 flex justify-center order-1 md:order-2 mb-8 md:mb-0">
-                        <img src={anime} alt="Orientation professionnelle" className="rounded-full w-64 h-64 md:w-96 md:h-96 object-cover shadow-2xl" />
-                    </div>
-                </main>
-
-                <section className="mt-16 hidden md:block">
-                    <h3 className="text-2xl font-bold text-center text-fuschia-600 mb-8">Nos services</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <div className="bg-white p-6 rounded-xl shadow-md">
-                            <Play size={32} className="text-fuschia-500 mb-4" />
-                            <h4 className="text-xl font-semibold mb-2">Orientation personnalisée</h4>
-                            <p className="text-gray-600">Découvrez votre voie professionnelle idéale grâce à notre analyse approfondie.</p>
-                        </div>
-                        <div className="bg-white p-6 rounded-xl shadow-md">
-                            <FileText size={32} className="text-fuschia-500 mb-4" />
-                            <h4 className="text-xl font-semibold mb-2">Fiche détaillée</h4>
-                            <p className="text-gray-600">Obtenez un rapport complet sur vos compétences et opportunités de carrière.</p>
-                        </div>
-                        <div className="bg-white p-6 rounded-xl shadow-md">
-                            <PhoneCall size={32} className="text-fuschia-500 mb-4" />
-                            <h4 className="text-xl font-semibold mb-2">Coaching personnalisé</h4>
-                            <p className="text-gray-600">Bénéficiez de l'expertise de nos coachs pour affiner votre parcours professionnel.</p>
-                        </div>
-                    </div>
-                </section>
-            </div>
+                </div>
+                <div className="text-center mt-8 text-[#A0A0A0] text-sm">
+                    2024 Décision. Tous droits réservés.
+                </div>
+            </footer>
 
             {showUserInfoModal && (
                 <UserInfoModal

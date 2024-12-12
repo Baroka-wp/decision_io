@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Play, RefreshCw, FileText, PhoneCall, User, Briefcase } from 'lucide-react';
 import { api } from './api';
 import UserInfoModal from './UserInfoModal';
-import anime from './assets/anime.jpeg';
+// import anime from './assets/anime.jpeg';
 
 const StartUppPresentation = ({ onStartOrientation, onViewExistingDecision }) => {
     const [hasExistingDecision, setHasExistingDecision] = useState(false);
@@ -128,9 +128,9 @@ const StartUppPresentation = ({ onStartOrientation, onViewExistingDecision }) =>
                             </button>
                         </div>
                     </div>
-                    <div className="md:w-1/2 flex justify-center order-1 md:order-2 mb-8 md:mb-0">
+                    {/* <div className="md:w-1/2 flex justify-center order-1 md:order-2 mb-8 md:mb-0">
                         <img src={anime} alt="Orientation professionnelle" className="rounded-full w-64 h-64 md:w-96 md:h-96 object-cover shadow-2xl" />
-                    </div>
+                    </div> */}
                 </main>
 
                 <section className="mt-16 hidden md:block">
