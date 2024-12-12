@@ -213,24 +213,39 @@ const Domaines = () => {
         navigate('/coaches');
     };
 
+    const handlePreviousQuestion = () => {
+        if (etape > 0) {
+            setEtape(etape - 1);
+        }
+    };
+
     const QuestionComponent = ({ question, onReponse, currentAnswer }) => (
         <div className="flex flex-col items-center justify-center w-full px-4 md:px-0">
             <h2 className="text-xl md:text-2xl font-bold mb-4 text-center text-[#2C3E50]">{etapes[etape]}</h2>
-            <h3 className="text-lg md:text-xl mb-6 text-center">{question.question}</h3>
+            <h3 className="text-lg md:text-xl mb-6 text-center text-[#4A4A4A]">{question.question}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-md md:max-w-2xl">
                 {question.options.map((option, index) => (
                     <button
                         key={index}
                         onClick={() => onReponse(option)}
-                        className={`flex items-center justify-center p-4 ${currentAnswer === option
-                            ? 'bg-[#3498db] text-white'
-                            : 'bg-[#2ecc71] text-white'
-                            } rounded-lg transition-all hover:scale-105 text-sm md:text-base`}
+                        className={`flex items-center justify-center p-4 rounded-lg transition-all hover:scale-105 text-sm md:text-base
+                            ${currentAnswer === option
+                                ? 'bg-[#6A5ACD] text-white shadow-md'
+                                : 'bg-white text-[#6A5ACD] border-2 border-[#6A5ACD] hover:bg-[#6A5ACD]/10'
+                            }`}
                     >
                         {option}
                     </button>
                 ))}
             </div>
+            {etape > 0 && (
+                <button
+                    onClick={handlePreviousQuestion}
+                    className="mt-4 px-4 py-2 bg-white text-[#6A5ACD] border-2 border-[#6A5ACD] rounded-lg hover:bg-[#6A5ACD]/10 transition"
+                >
+                    Question précédente
+                </button>
+            )}
         </div>
     );
 
@@ -245,6 +260,14 @@ const Domaines = () => {
         <div className="flex flex-col min-h-screen bg-gradient-to-br from-[#F5F5FA] to-[#FFFFFF]">
             {/* Navbar */}
             <Navbar />
+
+            {/* Progress Bar Container - Positioned right after Navbar */}
+            {etape >= 0 && !decisionFinale && (
+                <div className="w-full px-4 pt-2 absolute top-16 left-0 z-10">
+                    <ProgressBar progress={progression} />
+                </div>
+            )}
+
             {etape === -1 && (
                 <CharlesPresentation
                     onStartOrientation={handleStartOrientation}
@@ -260,18 +283,14 @@ const Domaines = () => {
             {etape >= 0 && (
                 <button
                     onClick={handleReturnHome}
-                    className="absolute top-4 left-4 flex items-center text-[#2C3E50] hover:text-[#1A1D23] z-10"
+                    className="absolute top-4 left-4 flex items-center text-[#2C3E50] hover:text-[#1A1D23] z-20"
                 >
                     <Home size={20} className="mr-2" />
                     <span className="hidden md:inline">Accueil</span>
                 </button>
             )}
 
-            {etape >= 0 && etape < etapes.length && (
-                <ProgressBar progress={progression} />
-            )}
-
-            <div className="flex-grow flex flex-col justify-center items-center p-4 md:p-8">
+            <div className="flex-grow flex flex-col justify-center items-center p-4 md:p-8 mt-12">
                 {isLoading ? (
                     <div className="flex flex-col justify-center items-center">
                         {etape < etapes.length ? (
