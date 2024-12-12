@@ -290,35 +290,38 @@ const Domaines = () => {
                 </button>
             )}
 
-            <div className="flex-grow flex flex-col justify-center items-center p-4 md:p-8 mt-12">
-                {isLoading ? (
-                    <div className="flex flex-col justify-center items-center">
-                        {etape < etapes.length ? (
-                            <Loader />
-                        ) : (
-                            <>
-                                <h2 className="text-xl md:text-2xl font-bold mb-4 text-[#2C3E50]">Analyse en cours...</h2>
-                                <ProgressBar progress={analysisProgress} />
-                            </>
-                        )}
-                    </div>
-                ) : decisionFinale ? (
-                    <DecisionFinaleComponent
-                        decision={decisionFinale}
-                        userInfo={userInfo}
-                        onback={handleBackclick}
-                    />
-                ) : etape >= 0 && questions.length > 0 && (
-                    <div className="w-full max-w-4xl">
-                        <QuestionComponent
-                            question={questions[etape]}
-                            onReponse={handleReponse}
-                            currentAnswer={reponses[etape]}
+            {decisionFinale && (
+                <div className="flex-grow flex flex-col justify-center items-center p-4 md:p-8 mt-12">
+                    {isLoading ? (
+                        <div className="flex flex-col justify-center items-center">
+                            {etape < etapes.length ? (
+                                <Loader />
+                            ) : (
+                                <>
+                                    <h2 className="text-xl md:text-2xl font-bold mb-4 text-[#2C3E50]">Analyse en cours...</h2>
+                                    <ProgressBar progress={analysisProgress} />
+                                </>
+                            )}
+                        </div>
+                    ) : decisionFinale ? (
+                        <DecisionFinaleComponent
+                            decision={decisionFinale}
+                            userInfo={userInfo}
+                            onback={handleBackclick}
                         />
-                    </div>
-                )}
-            </div>
+                    ) : etape >= 0 && questions.length > 0 && (
+                        <div className="w-full max-w-4xl">
+                            <QuestionComponent
+                                question={questions[etape]}
+                                onReponse={handleReponse}
+                                currentAnswer={reponses[etape]}
+                            />
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
+           
     );
 };
 
