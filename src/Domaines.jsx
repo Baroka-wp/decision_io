@@ -81,6 +81,13 @@ const Domaines = () => {
                 const user = JSON.parse(storedUserName);
                 setUserInfo({ id: user.id, name: user.name, phoneNumber: user.phoneNumber });
                 setEtape(0);
+                setQuestions([]);
+                setReponses([]);
+                setIsLoading(false);
+                setAnalysisProgress(0);
+                setDecisionFinale(null);
+                setHasFinalDecision(false);
+                setProgression(0);
             } catch (err) {
                 setShowUserInfoModal(true);
             }
@@ -193,12 +200,20 @@ const Domaines = () => {
     };
 
     const handleReturnHome = () => {
+        if (etape >= 0 && etape < etapes.length - 1) {
+            // If in progress, show confirmation dialog
+            const confirmQuit = window.confirm('Voulez-vous vraiment quitter le processus d\'orientation ? Toutes vos réponses seront perdues.');
+            if (!confirmQuit) return;
+        }
+        
+        // Reset all states
         setEtape(-1);
         setQuestions([]);
         setReponses([]);
         setDecisionFinale(null);
         setHasFinalDecision(false);
         setAnalysisProgress(0);
+        setProgression(0);
     };
 
     const handleBackclick = () => {
@@ -268,32 +283,10 @@ const Domaines = () => {
                 </div>
             )}
 
-            {etape === -1 && (
-                <CharlesPresentation
-                    onStartOrientation={handleStartOrientation}
-                    onViewExistingDecision={handleViewExistingDecision}
-                />
-            )}
-            {showUserInfoModal && (
-                <UserInfoModal
-                    onSubmit={handleUserInfoSubmit}
-                    onExistingDecision={handleExistingDecision}
-                />
-            )}
-            {etape >= 0 && (
-                <button
-                    onClick={handleReturnHome}
-                    className="absolute top-4 left-4 flex items-center text-[#2C3E50] hover:text-[#1A1D23] z-20"
-                >
-                    <Home size={20} className="mr-2" />
-                    <span className="hidden md:inline">Accueil</span>
-                </button>
-            )}
-
-            {decisionFinale && (
-                <div className="flex-grow flex flex-col justify-center items-center p-4 md:p-8 mt-12">
+                       {/* {decisionFinale && ( */}
+                       <div className="flex-grow flex flex-col justify-center items-center p-4 md:p-8 mt-12">
                     {isLoading ? (
-                        <div className="flex flex-col justify-center items-center">
+                        <div className="flex flex-col justify-center items-center w-full h-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                             {etape < etapes.length ? (
                                 <Loader />
                             ) : (
@@ -319,7 +312,31 @@ const Domaines = () => {
                         </div>
                     )}
                 </div>
+            {/* )} */}
+
+            {etape === -1 && (
+                <CharlesPresentation
+                    onStartOrientation={handleStartOrientation}
+                    onViewExistingDecision={handleViewExistingDecision}
+                />
             )}
+            {showUserInfoModal && (
+                <UserInfoModal
+                    onSubmit={handleUserInfoSubmit}
+                    onExistingDecision={handleExistingDecision}
+                />
+            )}
+            {(etape >= 0 && etape < etapes.length) && (
+                <button
+                    onClick={handleReturnHome}
+                    className="absolute top-20 left-4 flex items-center text-[#2C3E50] hover:text-[#1A1D23] z-20"
+                >
+                    <Home size={20} className="mr-2" />
+                    <span className="hidden md:inline">Accueil</span>
+                </button>
+            )}
+
+ 
         </div>
            
     );
