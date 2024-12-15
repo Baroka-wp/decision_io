@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Calendar, X, CreditCard, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { api } from './api';
-import UserInfoModal from './UserInfoModal';
-import CoachCard from './components/CoachCard';
-import Navbar from './components/Navbar';
+import { api } from '../api';
+import UserInfoModal from '../components/modal/UserInfoModal';
+import CoachCard from '../components/CoachCard';
+import Navbar from '../components/Navbar';
 
 const KKIA_PAY = import.meta.env.VITE_KKIA_PAY_KEY;
 

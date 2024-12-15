@@ -1,11 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
-import Domaines from './Domaines';
-import StartupEvaluation from './StartupEvaluation';
-import CoachesList from './CoachesList';
-import CoachDashboard from './CoachDashboard';
-import CoachLogin from './CoachLogin';
+import Domaines from './pages/Domaines';
+import StartupEvaluation from './pages/StartupEvaluation';
+import CoachesList from './pages/CoachesList';
+import CoachDashboard from './pages/CoachDashboard';
+import CoachLogin from './pages/CoachLogin';
 
 function App() {
   return (

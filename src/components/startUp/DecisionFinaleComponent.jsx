@@ -1,5 +1,5 @@
 import React from 'react';
-import { genererPDF } from './utils/pdfUtils';
+import { genererPDF } from '../../utils/pdfUtils';
 import { ChevronLeft, PhoneCall, Download } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 

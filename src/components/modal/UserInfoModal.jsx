@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PhoneInput from 'react-phone-number-input';
-import { api } from './api';
+import { api } from '../../api';
 import 'react-phone-number-input/style.css';
 
 const UserInfoModal = ({ onSubmit, onExistingDecision }) => {

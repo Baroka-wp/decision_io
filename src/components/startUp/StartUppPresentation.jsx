@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Play, RefreshCw, FileText, PhoneCall, User, Briefcase } from 'lucide-react';
-import { api } from './api';
-import UserInfoModal from './UserInfoModal';
+import { api } from '../../api';
+import UserInfoModal from '../modal/UserInfoModal';
+import Service from '../services';
 // import anime from './assets/anime.jpeg';
 
 const StartUppPresentation = ({ onStartOrientation, onViewExistingDecision }) => {
@@ -76,6 +77,29 @@ const StartUppPresentation = ({ onStartOrientation, onViewExistingDecision }) =>
         );
     }
 
+    const servicesData = [
+        {
+          icon: <Play size={32} className="text-fuschia-500 mb-4" />,
+          title: "Orientation études",
+          description: "Découvrez votre voie professionnelle idéale grâce à notre analyse approfondie.",
+        },
+        {
+          icon: <Briefcase size={32} className="text-yellow-500 mb-4" />,
+          title: "Évaluation startup",
+          description: "Évaluez votre profil d'entrepreneur et trouvez votre voie dans le monde des startups.",
+        },
+        {
+          icon: <FileText size={32} className="text-fuschia-500 mb-4" />,
+          title: "Fiche détaillée",
+          description: "Obtenez un rapport complet sur vos compétences et opportunités de carrière.",
+        },
+        {
+          icon: <PhoneCall size={32} className="text-fuschia-500 mb-4" />,
+          title: "Coaching personnalisé",
+          description: "Bénéficiez de l'expertise de nos coachs pour affiner votre parcours professionnel.",
+        },
+    ];
+
     return (
         <div className="min-h-screen bg-gradient-to-r from-fuschia-100 to-violet-100 p-4 md:p-8 flex flex-col">
             <div className="flex-grow flex flex-col max-w-7xl mx-auto w-full">
@@ -132,32 +156,22 @@ const StartUppPresentation = ({ onStartOrientation, onViewExistingDecision }) =>
                         <img src={anime} alt="Orientation professionnelle" className="rounded-full w-64 h-64 md:w-96 md:h-96 object-cover shadow-2xl" />
                     </div> */}
                 </main>
+                
 
                 <section className="mt-16 hidden md:block">
                     <h3 className="text-2xl font-bold text-center text-fuschia-600 mb-8">Nos services</h3>
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                        <div className="bg-white p-6 rounded-xl shadow-md">
-                            <Play size={32} className="text-fuschia-500 mb-4" />
-                            <h4 className="text-xl font-semibold mb-2">Orientation études</h4>
-                            <p className="text-gray-600">Découvrez votre voie professionnelle idéale grâce à notre analyse approfondie.</p>
-                        </div>
-                        <div className="bg-white p-6 rounded-xl shadow-md">
-                            <Briefcase size={32} className="text-yellow-500 mb-4" />
-                            <h4 className="text-xl font-semibold mb-2">Évaluation startup</h4>
-                            <p className="text-gray-600">Évaluez votre profil d'entrepreneur et trouvez votre voie dans le monde des startups.</p>
-                        </div>
-                        <div className="bg-white p-6 rounded-xl shadow-md">
-                            <FileText size={32} className="text-fuschia-500 mb-4" />
-                            <h4 className="text-xl font-semibold mb-2">Fiche détaillée</h4>
-                            <p className="text-gray-600">Obtenez un rapport complet sur vos compétences et opportunités de carrière.</p>
-                        </div>
-                        <div className="bg-white p-6 rounded-xl shadow-md">
-                            <PhoneCall size={32} className="text-fuschia-500 mb-4" />
-                            <h4 className="text-xl font-semibold mb-2">Coaching personnalisé</h4>
-                            <p className="text-gray-600">Bénéficiez de l'expertise de nos coachs pour affiner votre parcours professionnel.</p>
-                        </div>
+                        {servicesData.map((service, index) => (
+                        <Service
+                            key={index}
+                            icon={service.icon}
+                            title={service.title}
+                            description={service.description}
+                        />
+                        ))}
                     </div>
                 </section>
+                
             </div>
 
             {showUserInfoModal && (
