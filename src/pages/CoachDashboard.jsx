@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, User, CheckCircle, ChevronLeft, AlignLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { api } from './api';
-import { useAuth } from './context/AuthContext';
+import { api } from '../api';
+import { useAuth } from '../context/AuthContext';
 
 const CoachDashboard = () => {
     const navigate = useNavigate();

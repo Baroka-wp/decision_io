@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, Home } from 'lucide-react';
-import { generateStartupDecisionNode, takeStartupFinalDecision } from './api';
-import UserInfoModal from './UserInfoModal';
-import StartUppPresentation from './StartUppPresentation';
-import DecisionFinaleComponent from './DecisionFinaleComponent';
-import { api } from './api';
-import ProgressBar from './components/ProgressBar';
+import { generateStartupDecisionNode, takeStartupFinalDecision } from '../api';
+import UserInfoModal from '../components/modal/UserInfoModal';
+import StartUppPresentation from '../components/startUp/StartUppPresentation';
+import DecisionFinaleComponent from '../components/startUp/DecisionFinaleComponent';
+import { api } from '../api';
+import ProgressBar from '../components/ProgressBar';
 
 const Domaines = () => {
     const [etape, setEtape] = useState(-1);

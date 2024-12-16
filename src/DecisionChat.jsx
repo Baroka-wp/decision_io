@@ -4,7 +4,7 @@ import { Send, RotateCcw, Save, Home } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import logo from './assets/logo.png';
 import ChatMessage from './ChatMessage';
-import NameModal from './NameModal';
+import NameModal from './components/modal/NameModal';
 import { saveChatToPdf } from './utils/pdfUtils';
 import './DecisionChat.css';
 
