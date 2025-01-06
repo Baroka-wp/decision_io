@@ -4,7 +4,8 @@ import { AuthProvider } from './context/AuthContext';
 import Domaines from './pages/Domaines';
 import StartupEvaluation from './pages/StartupEvaluation';
 import CoachesList from './pages/CoachesList';
-import CoachDashboard from './pages/CoachDashboard';
+// import CoachDashboard from './pages/CoachDashboard';
+import CoachDashboard from './components/dashboard/DashboardLayout';
 import CoachLogin from './pages/CoachLogin';
 
 function App() {
