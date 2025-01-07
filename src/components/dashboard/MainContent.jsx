@@ -16,9 +16,9 @@ const MainContent = ({ activePage, menuItems, isSidebarOpen }) => {
       `}
     >
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-3xl font-semibold text-gray-800 mb-8">
+        {/* <h2 className="text-3xl font-semibold text-gray-800 mb-8">
           {menuItems.find((item) => item.id === activePage)?.label}
-        </h2>
+        </h2> */}
 
         {/* Affichage conditionnel pour chaque page */}
         {/* {activePage === 'calendar' ? (
@@ -38,11 +38,11 @@ const MainContent = ({ activePage, menuItems, isSidebarOpen }) => {
             </p>
           </div>
         )} */}
-        {activePage === 'calendar' && <CalendarPage />}
-        {activePage === 'profile' && <ProfilePage />}
-        {activePage === 'settings' && <SettingsPage />}
-        {activePage === 'revenue' && <RevenuePage />}
-        {activePage === 'appointment' && <CoachDashboard />}
+        {activePage === 'Calendrier' && <CalendarPage />}
+        {activePage === 'Profile' && <ProfilePage />}
+        {activePage === 'Paramètres' && <SettingsPage />}
+        {activePage === 'Vos Revenues' && <RevenuePage />}
+        {activePage === 'Mes rendez-vous' && <CoachDashboard />}
       </div>
     </main>
   );

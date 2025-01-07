@@ -53,7 +53,7 @@ const CalendarPage = () => {
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 min-h-[600px]">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-violet-600">Calendrier</h2>
+        {/* <h2 className="text-2xl font-bold text-violet-600">Calendrier</h2> */}
         <button 
           onClick={() => setShowAddForm(!showAddForm)}
           className="flex items-center gap-2 bg-fuschia-500 hover:bg-fuschia-600 text-white px-4 py-2 rounded-lg transition-colors"

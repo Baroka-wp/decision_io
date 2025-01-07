@@ -14,7 +14,7 @@ const Navbar = ({ activePage }) => {
         <div className="flex justify-between items-center h-16">
           {/* Titre de la page active */}
           <div className="flex items-center">
-            <h1 className="text-xl font-bold text-violet-600">
+            <h1 className="text-2xl font-bold text-violet-600 px-72">
               {activePage}
             </h1>
           </div>

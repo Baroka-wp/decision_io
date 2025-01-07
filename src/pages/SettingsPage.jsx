@@ -44,7 +44,7 @@ const SettingsPage = () => {
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-2xl font-bold text-violet-600 mb-6">Paramètres</h1>
+        {/* <h1 className="text-2xl font-bold text-violet-600 mb-6">Paramètres</h1> */}
 
         {/* Navigation par onglets */}
         <div className="bg-white rounded-xl shadow-md overflow-hidden mb-6">
